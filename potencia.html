@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Jogos Matemáticos</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --disabled: #94a3b8;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 2rem;
+            color: var(--primary);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .btn-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 30px 20px;
+            background-color: var(--card-bg);
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        /* Efeito para os botões ativos */
+        .btn-link:not(.disabled):hover {
+            transform: translateY(-5px);
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+        }
+
+        /* Estilo para os botões "Em Breve" */
+        .btn-link.disabled {
+            background-color: #e2e8f0;
+            color: var(--disabled);
+            cursor: not-allowed;
+            border: 2px dashed #cbd5e1;
+            box-shadow: none;
+        }
+
+        @media (max-width: 600px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Portal de Atividades</h1>
+
+    <div class="menu-grid">
+        <a href="bingo-potencias.html" class="btn-link">
+            Bingo de Potências
+        </a>
+
+        <a href="sorteador-cartesiano.html" class="btn-link">
+            Bingo do Plano Cartesiano
+        </a>
+
+        <div class="btn-link disabled">Em breve</div>
+        <div class="btn-link disabled">Em breve</div>
+        <div class="btn-link disabled">Em breve</div>
+        <div class="btn-link disabled">Em breve</div>
+    </div>
+
+</body>
+</html>
