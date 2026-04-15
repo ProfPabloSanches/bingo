@@ -74,7 +74,7 @@
             color: #1e40af;
         }
 
-        button {
+        button, .btn-secondary {
             width: 100%;
             padding: 12px;
             background-color: var(--primary);
@@ -84,9 +84,20 @@
             cursor: pointer;
             font-weight: bold;
             margin-top: 5px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            box-sizing: border-box;
+            font-size: 0.9rem;
         }
 
-        button:hover { opacity: 0.9; }
+        button:hover, .btn-secondary:hover { opacity: 0.9; }
+
+        /* Estilo específico para o botão de voltar */
+        .btn-home {
+            background-color: #64748b;
+            margin-top: 15px;
+        }
 
         #resultado-atual {
             margin: 20px 0;
@@ -144,6 +155,8 @@
     <div style="text-align: center; font-size: 0.8rem; color: #94a3b8;">
         Sorteados: <span id="cont-sorteados">0</span>
     </div>
+
+    <a href="index.html" class="btn-secondary btn-home">🏠 Voltar à Página Inicial</a>
 </div>
 
 <div class="sidebar">
