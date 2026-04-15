@@ -35,10 +35,11 @@
 
         .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            /* Layout de duas colunas */
+            grid-template-columns: repeat(2, 1fr); 
             gap: 20px;
             width: 100%;
-            max-width: 900px;
+            max-width: 650px;
         }
 
         .btn-link {
@@ -56,9 +57,9 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
             border: 2px solid transparent;
+            min-height: 80px;
         }
 
-        /* Efeito para os botões ativos */
         .btn-link:not(.disabled):hover {
             transform: translateY(-5px);
             background-color: var(--primary);
@@ -66,7 +67,6 @@
             box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
         }
 
-        /* Estilo para os botões "Em Breve" */
         .btn-link.disabled {
             background-color: #e2e8f0;
             color: var(--disabled);
@@ -87,16 +87,22 @@
     <h1>Portal de Atividades</h1>
 
     <div class="menu-grid">
-        <a href="https://profpablosanches.github.io/bingo/potencia.html" class="btn-link">
+        <a href="bingo-potencias.html" class="btn-link">
             Bingo de Potências
         </a>
 
-        <a href="https://profpablosanches.github.io/bingo/cartesiano.html" class="btn-link">
+        <a href="sorteador-cartesiano.html" class="btn-link">
             Bingo do Plano Cartesiano
         </a>
 
-        <div class="btn-link disabled">Em breve</div>
-        <div class="btn-link disabled">Em breve</div>
+        <a href="https://profpablosanches.github.io/bingo/gerador_cartelas.html" class="btn-link">
+            Gerador de Cartelas com Potência
+        </a>
+
+        <a href="COLE AQUI O LINK" class="btn-link">
+            Gerador de Cartelas para Plano Cartesiano
+        </a>
+
         <div class="btn-link disabled">Em breve</div>
         <div class="btn-link disabled">Em breve</div>
     </div>
