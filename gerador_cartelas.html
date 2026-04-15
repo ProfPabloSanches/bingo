@@ -43,6 +43,10 @@
         .shuffle-btn { background: #2980b9; }
         .print-btn { background: #27ae60; }
         .sorteador-btn { background: transparent; color: #2980b9; border: 2px solid #2980b9; padding: 12px 25px; font-size: 14px; }
+        
+        /* Estilo para o botão de voltar adicionado */
+        .home-btn { background: transparent; color: #7f8c8d; border: 2px solid #7f8c8d; padding: 12px 25px; font-size: 14px; }
+        .home-btn:hover { background: #7f8c8d; color: white; }
 
         /* Estilos de Página e Impressão */
         .page { 
@@ -64,7 +68,6 @@
         td { border: 1.5px solid #333; font-weight: bold; color: #000; padding: 8px 2px; }
         h4 { margin: 0 0 5px 0; color: #333; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid #ddd; }
 
-        /* Rodapé com Hash de Grupo */
         .card-footer { 
             margin-top: 10px; 
             padding-top: 5px;
@@ -122,7 +125,10 @@
         </div>
 
         <div class="button-row">
+            <a href="index.html" class="btn home-btn">🏠 Página Inicial</a>
+
             <a href="https://profpablosanches.github.io/bingo/potencia.html" class="btn sorteador-btn">🎮 Sorteador</a>
+            
             <select id="layoutSorteio" class="layout-select">
                 <option value="2">2 Cartelas</option>
                 <option value="4">4 Cartelas</option>
@@ -138,7 +144,6 @@
     <script>
         const container = document.getElementById('bingo-container');
 
-        // Gera um Hash único para o GRUPO baseado no tempo e configurações
         async function gerarHashGrupo(semente) {
             const encoder = new TextEncoder();
             const data = encoder.encode(semente);
@@ -166,7 +171,6 @@
             const useFree = document.getElementById('useFree').checked;
             const perPage = parseInt(document.getElementById('layoutSorteio').value);
             
-            // Semente única para este clique (Data + Configs)
             const sementeGrupo = Date.now() + bMin + bMax + eMin + eMax + totalCartelas;
             const hashUnicoLote = await gerarHashGrupo(sementeGrupo.toString());
 
