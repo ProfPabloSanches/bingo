@@ -1,105 +1,236 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Jogos Matemáticos</title>
+    <title>Sorteador Bingo - Potência Customizada</title>
     <style>
-        :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg: #f1f5f9;
-            --card-bg: #ffffff;
-            --text: #1e293b;
-            --disabled: #94a3b8;
-        }
-
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; height: 100vh; margin: 0; background: #121212; color: white; overflow: hidden; }
+        
+        /* Área Principal */
+        .main { flex: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #444; padding: 20px; }
+        h1 { color: #f1c40f; letter-spacing: 2px; margin-bottom: 5px; }
+        .sub { color: #888; margin-bottom: 20px; }
+        
+        /* Painel de Configuração */
+        .config-panel {
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #333;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-
-        h1 {
-            margin-bottom: 2rem;
-            color: var(--primary);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
-            width: 100%;
-            max-width: 900px;
+            font-size: 14px;
+        }
+        .config-group { display: flex; flex-direction: column; gap: 5px; }
+        .config-group label { color: #f1c40f; font-weight: bold; font-size: 12px; text-transform: uppercase; }
+        .config-inputs { display: flex; gap: 5px; }
+        .config-panel input { 
+            width: 50px; background: #2d2d2d; border: 1px solid #444; color: white; 
+            padding: 5px; border-radius: 4px; text-align: center; 
         }
 
-        .btn-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 30px 20px;
-            background-color: var(--card-bg);
-            color: var(--primary);
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
+        /* Ajuste do Expoente */
+        sup { 
+            vertical-align: super; 
+            font-size: 0.5em !important; 
+            line-height: 0; 
+            position: relative; 
+            top: -0.5em; 
         }
 
-        /* Efeito para os botões ativos */
-        .btn-link:not(.disabled):hover {
-            transform: translateY(-5px);
-            background-color: var(--primary);
-            color: white;
-            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+        .display-operacao { font-size: 140px; font-weight: bold; margin: 30px; color: #ffffff; text-shadow: 0 0 20px rgba(255,255,255,0.2); height: 180px; display: flex; align-items: center; }
+        
+        /* Lateral de Histórico */
+        .sidebar { flex: 1; padding: 20px; overflow-y: auto; background: #1e1e1e; }
+        .sidebar h2 { font-size: 18px; border-bottom: 2px solid #444; padding-bottom: 10px; color: #bbb; text-align: center; }
+        .historico-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        
+        .historico-item { 
+            background: #2d2d2d; padding: 15px 10px; border-radius: 4px; 
+            text-align: center; font-size: 24px; color: #f1c40f; border: 1px solid #444;
+            cursor: pointer; transition: 0.2s;
+            animation: fadeIn 0.3s ease;
         }
+        .historico-item:hover { background: #3d3d3d; transform: scale(1.05); border-color: #f1c40f; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Botões */
+        .controls { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+        button, .btn-link { 
+            padding: 20px 60px; font-size: 24px; cursor: pointer; background: #f1c40f; color: #000; 
+            border: none; border-radius: 50px; font-weight: bold; transition: 0.2s; box-shadow: 0 4px #d4ac0d; 
+            text-decoration: none; display: inline-block; text-align: center;
+        }
+        button:hover { background: #d4ac0d; }
+        button:active { transform: translateY(2px); box-shadow: 0 2px #d4ac0d; }
+        button:disabled { background: #444; color: #888; box-shadow: none; cursor: not-allowed; }
+        
+        .secondary-btn { background: transparent; font-size: 14px; padding: 8px 15px; border-radius: 4px; margin-top: 5px; box-shadow: none; font-weight: normal; transition: 0.3s; cursor: pointer; }
+        .instr-btn { color: #3498db; border: 1px solid #3498db; }
+        .instr-btn:hover { background: #3498db; color: white; }
+        .gerador-btn { color: #2ecc71; border: 1px solid #2ecc71; font-weight: bold; text-decoration: none; }
+        .gerador-btn:hover { background: #2ecc71; color: white; }
+        .reset { color: #e74c3c; border: 1px solid #e74c3c; }
+        .reset:hover { background: #e74c3c; color: white; }
 
-        /* Estilo para os botões "Em Breve" */
-        .btn-link.disabled {
-            background-color: #e2e8f0;
-            color: var(--disabled);
-            cursor: not-allowed;
-            border: 2px dashed #cbd5e1;
-            box-shadow: none;
-        }
+        .group-row { display: flex; gap: 10px; }
 
-        @media (max-width: 600px) {
-            .menu-grid {
-                grid-template-columns: 1fr;
-            }
+        /* Modais */
+        .modal-overlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(5px);
+            justify-content: center; align-items: center; z-index: 1000;
         }
+        .modal-overlay.show { display: flex; }
+        .modal-content { 
+            background: #2c3e50; padding: 40px; border-radius: 20px; border: 2px solid #f1c40f;
+            text-align: center; box-shadow: 0 10px 50px rgba(0,0,0,0.5); max-width: 500px;
+        }
+        .modal-op { font-size: 100px; color: #bdc3c7; font-weight: bold; }
+        .modal-res { font-size: 140px; color: #f1c40f; font-weight: bold; }
+        .close-modal { margin-top: 20px; background: #95a5a6; font-size: 16px; padding: 10px 20px; color: white; border-radius: 5px; cursor: pointer; border: none; }
     </style>
 </head>
 <body>
 
-    <h1>Portal de Atividades</h1>
+    <div class="main">
+        <h1>BINGO: POTÊNCIAS</h1>
+        <p class="sub">Configure o intervalo e sorteie as operações</p>
 
-    <div class="menu-grid">
-        <a href="bingo-potencias.html" class="btn-link">
-            Bingo de Potências
-        </a>
-
-        <a href="sorteador-cartesiano.html" class="btn-link">
-            Bingo do Plano Cartesiano
-        </a>
-
-        <div class="btn-link disabled">Em breve</div>
-        <div class="btn-link disabled">Em breve</div>
-        <div class="btn-link disabled">Em breve</div>
-        <div class="btn-link disabled">Em breve</div>
+        <div class="config-panel">
+            <div class="config-group">
+                <label>Bases</label>
+                <div class="config-inputs">
+                    <input type="number" id="base-min" value="1" title="Mínimo">
+                    <input type="number" id="base-max" value="6" title="Máximo">
+                </div>
+            </div>
+            <div class="config-group">
+                <label>Expoentes</label>
+                <div class="config-inputs">
+                    <input type="number" id="exp-min" value="1" title="Mínimo">
+                    <input type="number" id="exp-max" value="6" title="Máximo">
+                </div>
+            </div>
+        </div>
+        
+        <div id="operacao-atual" class="display-operacao">?</div>
+        
+        <div class="controls">
+            <button id="btn-sortear" onclick="sortear()">PRÓXIMA OPERAÇÃO</button>
+            
+            <div class="group-row">
+                <a href="gerador_cartelas.html" class="secondary-btn gerador-btn">🖨️ Gerador de Cartelas</a>
+                <button class="secondary-btn instr-btn" onclick="abrirInstrucoes()">Instruções</button>
+            </div>
+            
+            <button class="secondary-btn reset" onclick="zerarSorteador()">Reiniciar com novos valores</button>
+        </div>
     </div>
 
+    <div class="sidebar">
+        <h2>HISTÓRICO (Clique p/ ver)</h2>
+        <div id="historico" class="historico-grid"></div>
+    </div>
+
+    <div id="modal-res-container" class="modal-overlay" onclick="fecharModal('modal-res-container')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div id="modal-op" class="modal-op"></div>
+            <div style="color: #95a5a6; font-size: 20px;">resultado:</div>
+            <div id="modal-res" class="modal-res"></div>
+            <button class="close-modal" onclick="fecharModal('modal-res-container')">Fechar [X]</button>
+        </div>
+    </div>
+
+    <div id="modal-instr" class="modal-overlay" onclick="fecharModal('modal-instr')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 style="color: #f1c40f;">Instruções do Jogo</h2>
+            <div class="instr-text" id="texto-instrucoes">
+                1. Defina o intervalo de Bases e Expoentes desejado.<br>
+                2. Clique em "Reiniciar" para carregar as novas possibilidades.<br>
+                3. Distribua as cartelas para os alunos.<br>
+                4. Clique em "PRÓXIMA OPERAÇÃO" para sortear.<br>
+                5. Os alunos marcam o resultado se houver na cartela.<br>
+                6. Clique no histórico para conferir o resultado de um sorteio passado.<br>
+            </div>
+            <button class="close-modal" onclick="fecharModal('modal-instr')">Entendido</button>
+        </div>
+    </div>
+
+    <script>
+        let operacoesPool = [];
+
+        function inicializar() {
+            const bMin = parseInt(document.getElementById('base-min').value);
+            const bMax = parseInt(document.getElementById('base-max').value);
+            const eMin = parseInt(document.getElementById('exp-min').value);
+            const eMax = parseInt(document.getElementById('exp-max').value);
+
+            operacoesPool = [];
+            
+            // Loop baseado nos valores dos inputs
+            for (let b = bMin; b <= bMax; b++) {
+                for (let e = eMin; e <= eMax; e++) {
+                    operacoesPool.push({
+                        html: b + '<sup>' + e + '</sup>',
+                        resultado: Math.pow(b, e).toLocaleString('pt-BR')
+                    });
+                }
+            }
+            embaralhar();
+        }
+
+        function embaralhar() {
+            operacoesPool.sort(() => Math.random() - 0.5);
+        }
+
+        function sortear() {
+            if (operacoesPool.length === 0) {
+                document.getElementById('operacao-atual').style.fontSize = '60px';
+                document.getElementById('operacao-atual').innerText = "FIM DO JOGO";
+                document.getElementById('btn-sortear').disabled = true;
+                return;
+            }
+            const itemSorteado = operacoesPool.pop();
+            document.getElementById('operacao-atual').innerHTML = itemSorteado.html;
+
+            const historicoDiv = document.getElementById('historico');
+            const novoItem = document.createElement('div');
+            novoItem.className = 'historico-item';
+            novoItem.innerHTML = itemSorteado.html;
+            novoItem.onclick = () => mostrarResultado(itemSorteado.html, itemSorteado.resultado);
+            historicoDiv.prepend(novoItem);
+        }
+
+        function mostrarResultado(opHtml, resText) {
+            document.getElementById('modal-op').innerHTML = opHtml;
+            document.getElementById('modal-res').innerText = resText;
+            document.getElementById('modal-res-container').classList.add('show');
+        }
+
+        function abrirInstrucoes() {
+            document.getElementById('modal-instr').classList.add('show');
+        }
+
+        function fecharModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        function zerarSorteador() {
+            if (confirm("Deseja aplicar os novos limites e reiniciar o bingo?")) {
+                fecharModal('modal-res-container');
+                document.getElementById('historico').innerHTML = "";
+                document.getElementById('operacao-atual').innerHTML = "?";
+                document.getElementById('operacao-atual').style.fontSize = '140px';
+                document.getElementById('btn-sortear').disabled = false;
+                inicializar();
+            }
+        }
+
+        // Inicia o jogo na primeira carga
+        inicializar();
+    </script>
 </body>
 </html>
