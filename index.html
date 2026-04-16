@@ -14,6 +14,22 @@
             --disabled: #94a3b8;
         }
 
+        /* Camada de fundo com fórmulas */
+        .math-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+            user-select: none;
+            opacity: 0.1;
+            font-family: "Times New Roman", serif;
+            font-style: italic;
+            color: var(--text);
+        }
+
+        .formula { position: absolute; white-space: nowrap; }
+
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg);
@@ -28,18 +44,36 @@
         }
 
         h1 {
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
             color: var(--primary);
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
+        /* Estrutura de 4 Colunas */
         .menu-grid {
             display: grid;
-            /* Layout de duas colunas */
-            grid-template-columns: repeat(2, 1fr); 
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             width: 100%;
-            max-width: 650px;
+            max-width: 1100px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .column-title {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
         }
 
         .btn-link {
@@ -47,25 +81,85 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 30px 20px;
+            padding: 20px 15px;
             background-color: var(--card-bg);
             color: var(--primary);
             text-decoration: none;
             border-radius: 12px;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
             border: 2px solid transparent;
-            min-height: 80px;
+            min-height: 70px;
         }
 
         .btn-link:not(.disabled):hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             background-color: var(--primary);
             color: white;
-            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
         }
+
+        .disabled {
+            background-color: #e2e8f0;
+            color: var(--disabled);
+            cursor: not-allowed;
+            border: 1px dashed var(--disabled);
+        }
+
+        @media (max-width: 900px) {
+            .menu-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 500px) {
+            .menu-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="math-bg">
+        <div class="formula" style="top: 5%; left: 5%;">a² + b² = c²</div>
+        <div class="formula" style="top: 15%; right: 10%;">E = mc²</div>
+        <div class="formula" style="bottom: 20%; left: 8%;">x = [-b ± √Δ] / 2a</div>
+        <div class="formula" style="top: 40%; left: 2%;">π ≈ 3,14</div>
+        <div class="formula" style="bottom: 10%; right: 5%;">e^{iπ} + 1 = 0</div>
+        <div class="formula" style="top: 60%; right: 15%;">sin²θ + cos²θ = 1</div>
+    </div>
+
+    <h1>Portal de Jogos Matemáticos</h1>
+
+    <div class="menu-grid">
+        <div class="column">
+            <div class="column-title">Potências</div>
+            <a href="potencia.html" class="btn-link">Bingo de Potências</a>
+            <a href="gerador_cartelas.html" class="btn-link">Gerador de Cartela de Potências</a>
+        </div>
+
+        <div class="column">
+            <div class="column-title">Coordenadas</div>
+            <a href="cartesiano.html" class="btn-link">Bingo de Coordenadas</a>
+            <a href="gerador_cartelas_cartesiano.html" class="btn-link">Gerador de Cartela de Coordenadas</a>
+            <a href="gerador_planos_cartesianos.html" class="btn-link">Gerador de Cartelas do Plano Cartesiano</a>
+        </div>
+
+        <div class="column">
+            <div class="column-title">Raízes</div>
+            <a href="bingo-raizes.html" class="btn-link">Bingo de Raízes</a>
+            <a href="cartela-raizes.html" class="btn-link">Gerador de Cartela de Raízes</a>
+        </div>
+
+        <div class="column">
+            <div class="column-title">WIP</div>
+            <a href="#" class="btn-link disabled">Em Desenvolvimento</a>
+            <a href="#" class="btn-link disabled">Em Desenvolvimento</a>
+            <a href="#" class="btn-link disabled">Em Desenvolvimento</a>
+        </div>
+    </div>
+
+</body>
+</html>        }
 
         .btn-link.disabled {
             background-color: #e2e8f0;
