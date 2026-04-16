@@ -14,6 +14,18 @@
             border-top: 5px solid #6366f1;
         }
         
+        /* Nova caixa de info de limites */
+        .limit-info {
+            background: #eef2ff;
+            color: #4338ca;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            border: 1px solid #c7d2fe;
+        }
+
         .config-row { 
             display: flex; justify-content: center; align-items: flex-end; 
             gap: 20px; margin-bottom: 20px; flex-wrap: wrap;
@@ -95,6 +107,10 @@
     <h1>Gerador de Bingo Cartesiano</h1>
     
     <div class="setup-container">
+        <div class="limit-info" id="limitFeedback">
+            Carregando limites...
+        </div>
+
         <div class="config-row">
             <div class="input-group highlight">
                 <label>Qtd. Cartelas</label>
@@ -102,23 +118,23 @@
             </div>
             <div class="input-group">
                 <label>Grade</label>
-                <select id="gridSize" class="grid-select">
+                <select id="gridSize" class="grid-select" onchange="atualizarFeedback()">
                     <option value="3">3x3</option>
                     <option value="4">4x4</option>
                     <option value="5">5x5</option>
                 </select>
             </div>
             <label class="free-option">
-                <input type="checkbox" id="useFree" checked>
+                <input type="checkbox" id="useFree" checked onchange="atualizarFeedback()">
                 <span>CENTRO LIVRE</span>
             </label>
         </div>
 
         <div class="config-row">
-            <div class="input-group"><label>X Mín.</label><input type="number" id="xMin" class="math-input" value="-5"></div>
-            <div class="input-group"><label>X Máx.</label><input type="number" id="xMax" class="math-input" value="5"></div>
-            <div class="input-group"><label>Y Mín.</label><input type="number" id="yMin" class="math-input" value="-5"></div>
-            <div class="input-group"><label>Y Máx.</label><input type="number" id="yMax" class="math-input" value="5"></div>
+            <div class="input-group"><label>X Mín.</label><input type="number" id="xMin" class="math-input" value="-5" oninput="atualizarFeedback()"></div>
+            <div class="input-group"><label>X Máx.</label><input type="number" id="xMax" class="math-input" value="5" oninput="atualizarFeedback()"></div>
+            <div class="input-group"><label>Y Mín.</label><input type="number" id="yMin" class="math-input" value="-5" oninput="atualizarFeedback()"></div>
+            <div class="input-group"><label>Y Máx.</label><input type="number" id="yMax" class="math-input" value="5" oninput="atualizarFeedback()"></div>
         </div>
 
         <div class="button-row">
@@ -139,6 +155,32 @@
 
     <script>
         const container = document.getElementById('bingo-container');
+        const feedbackEl = document.getElementById('limitFeedback');
+
+        // Função para identificar e mostrar o limite de coordenadas
+        function atualizarFeedback() {
+            const xMin = parseInt(document.getElementById('xMin').value) || 0;
+            const xMax = parseInt(document.getElementById('xMax').value) || 0;
+            const yMin = parseInt(document.getElementById('yMin').value) || 0;
+            const yMax = parseInt(document.getElementById('yMax').value) || 0;
+            const dimensao = parseInt(document.getElementById('gridSize').value);
+            const useFree = document.getElementById('useFree').checked;
+
+            const totalPares = (xMax - xMin + 1) * (yMax - yMin + 1);
+            const totalCasas = dimensao * dimensao;
+            const qtdNecessaria = (useFree && dimensao % 2 !== 0) ? totalCasas - 1 : totalCasas;
+
+            if (xMax < xMin || yMax < yMin) {
+                feedbackEl.style.color = "#e74c3c";
+                feedbackEl.innerHTML = "⚠️ <strong>Erro:</strong> Limite máximo deve ser maior que o mínimo.";
+            } else if (totalPares < qtdNecessaria) {
+                feedbackEl.style.color = "#e74c3c";
+                feedbackEl.innerHTML = `⚠️ <strong>Insuficiente:</strong> O intervalo gera ${totalPares} coordenadas, mas a grade ${dimensao}x${dimensao} precisa de ${qtdNecessaria}.`;
+            } else {
+                feedbackEl.style.color = "#4338ca";
+                feedbackEl.innerHTML = `✅ <strong>Disponível:</strong> ${totalPares} coordenadas únicas identificadas para este intervalo.`;
+            }
+        }
 
         async function gerarHashGrupo(semente) {
             const encoder = new TextEncoder();
@@ -170,7 +212,6 @@
             const sementeGrupo = Date.now() + xMin + xMax + yMin + yMax + totalCartelas;
             const hashUnicoLote = await gerarHashGrupo(sementeGrupo.toString());
 
-            // Gerar lista de pares ordenados (x, y)
             let listaPares = [];
             for (let x = xMin; x <= xMax; x++) {
                 for (let y = yMin; y <= yMax; y++) {
@@ -230,6 +271,8 @@
             }
         }
 
+        // Inicializa o feedback e as cartelas
+        atualizarFeedback();
         gerarCartelas();
     </script>
 </body>
