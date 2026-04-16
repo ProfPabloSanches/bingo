@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Gerador de Planos Cartesianos Pro - Com Margens</title>
+    <title>Gerador de Planos Cartesianos Pro - Com Identificador de Limites</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -17,6 +17,19 @@
             max-width: 950px; margin: 0 auto 30px auto; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             border-top: 5px solid var(--primary);
+        }
+
+        /* Painel de Identificação de Limites */
+        .limit-badge {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            color: #4338ca;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 13px;
+            font-weight: 600;
         }
 
         .config-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; }
@@ -65,7 +78,182 @@
 
         .chart-title { font-size: 15px; font-weight: bold; margin-bottom: 10px; text-align: center; text-transform: uppercase; }
 
-        .footer-info {
+        @media print {
+            .setup-container, h1 { display: none !important; }
+            body { background: white; padding: 0; margin: 0; }
+            .page { margin: 0 !important; border: none; box-shadow: none; }
+            @page { size: A4 landscape; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 style="text-align: center;">Gerador de Planos Cartesianos</h1>
+
+    <div class="setup-container">
+        <div id="infoLimites" class="limit-badge">
+            Calculando combinações possíveis...
+        </div>
+
+        <div class="config-row">
+            <div class="input-group">
+                <label>Qtd. de Planos</label>
+                <select id="qtdPlanos">
+                    <option value="2">2 Planos</option>
+                    <option value="4">4 Planos</option>
+                    <option value="6">6 Planos</option>
+                    <option value="10">10 Planos</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Pontos / Plano</label>
+                <input type="number" id="pts" value="5" class="limit-input" oninput="validarLimites()">
+            </div>
+            <div class="input-group">
+                <label>X (Mín / Máx)</label>
+                <div style="display:flex; gap:2px">
+                    <input type="number" id="xMin" value="-5" class="limit-input" oninput="validarLimites()">
+                    <input type="number" id="xMax" value="5" class="limit-input" oninput="validarLimites()">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Y (Mín / Máx)</label>
+                <div style="display:flex; gap:2px">
+                    <input type="number" id="yMin" value="-5" class="limit-input" oninput="validarLimites()">
+                    <input type="number" id="yMax" value="5" class="limit-input" oninput="validarLimites()">
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-row">
+            <a href="index.html" class="btn btn-home">🏠 Início</a>
+            <button class="btn btn-gen" onclick="gerar()">🔄 Gerar Planos</button>
+            <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir</button>
+        </div>
+    </div>
+
+    <div id="container"></div>
+
+    <script>
+        let charts = [];
+
+        function validarLimites() {
+            const xMin = parseInt(document.getElementById('xMin').value) || 0;
+            const xMax = parseInt(document.getElementById('xMax').value) || 0;
+            const yMin = parseInt(document.getElementById('yMin').value) || 0;
+            const yMax = parseInt(document.getElementById('yMax').value) || 0;
+            const pts = parseInt(document.getElementById('pts').value) || 0;
+            const info = document.getElementById('infoLimites');
+
+            const totalPossivel = (xMax - xMin + 1) * (yMax - yMin + 1);
+
+            if (xMax <= xMin || yMax <= yMin) {
+                info.style.color = "#ef4444";
+                info.innerHTML = "⚠️ Erro: O valor Máximo deve ser maior que o Mínimo.";
+                return 0;
+            }
+
+            if (pts > totalPossivel) {
+                info.style.color = "#ef4444";
+                info.innerHTML = `⚠️ Impossível: Você pediu ${pts} pontos, mas o intervalo só permite ${totalPossivel} coordenadas únicas.`;
+            } else {
+                info.style.color = "#4338ca";
+                info.innerHTML = `✅ Limite Identificado: Existem ${totalPossivel} coordenadas possíveis. (Sorteando ${pts} por plano)`;
+            }
+            return totalPossivel;
+        }
+
+        function gerar() {
+            const container = document.getElementById('container');
+            const totalPlanos = parseInt(document.getElementById('qtdPlanos').value);
+            const numPts = parseInt(document.getElementById('pts').value);
+            const xMin = parseInt(document.getElementById('xMin').value);
+            const xMax = parseInt(document.getElementById('xMax').value);
+            const yMin = parseInt(document.getElementById('yMin').value);
+            const yMax = parseInt(document.getElementById('yMax').value);
+
+            const limite = validarLimites();
+            if (numPts > limite) {
+                alert("Reduza a quantidade de pontos ou aumente os limites dos eixos.");
+                return;
+            }
+
+            container.innerHTML = '';
+            charts.forEach(c => c.destroy());
+            charts = [];
+
+            let count = 0;
+            while (count < totalPlanos) {
+                const page = document.createElement('div');
+                page.className = 'page';
+
+                for (let i = 0; i < 2 && count < totalPlanos; i++) {
+                    count++;
+                    const chartId = `chart-${count}`;
+                    const box = document.createElement('div');
+                    box.className = 'chart-box';
+                    box.innerHTML = `
+                        <div class="chart-title">Plano Cartesiano #${count}</div>
+                        <div class="chart-container"><canvas id="${chartId}"></canvas></div>
+                    `;
+                    page.appendChild(box);
+                    container.appendChild(page);
+
+                    // Gerar pontos únicos
+                    let points = [];
+                    const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                    while(points.length < numPts) {
+                        let p = {
+                            x: Math.floor(Math.random() * (xMax - xMin + 1)) + xMin,
+                            y: Math.floor(Math.random() * (yMax - yMin + 1)) + yMin,
+                            label: labels[points.length % labels.length]
+                        };
+                        if(!points.some(e => e.x === p.x && e.y === p.y)) points.push(p);
+                    }
+
+                    const ctx = document.getElementById(chartId).getContext('2d');
+                    const newChart = new Chart(ctx, {
+                        type: 'scatter',
+                        data: {
+                            datasets: [{
+                                data: points,
+                                backgroundColor: 'red',
+                                pointRadius: 6,
+                                borderColor: 'black',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: { type: 'linear', position: 'center', min: xMin - 1, max: xMax + 1, ticks: { stepSize: 1 }, grid: { color: '#ccc' } },
+                                y: { type: 'linear', position: 'center', min: yMin - 1, max: yMax + 1, ticks: { stepSize: 1 }, grid: { color: '#ccc' } }
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                afterDatasetsDraw: (chart) => {
+                                    const {ctx} = chart;
+                                    ctx.fillStyle = "black";
+                                    ctx.font = "bold 14px Arial";
+                                    chart.data.datasets[0].data.forEach((p) => {
+                                        const xPos = chart.scales.x.getPixelForValue(p.x);
+                                        const yPos = chart.scales.y.getPixelForValue(p.y);
+                                        ctx.fillText(p.label, xPos + 8, yPos - 8);
+                                    });
+                                }
+                            }
+                        }
+                    });
+                    charts.push(newChart);
+                }
+            }
+        }
+
+        window.onload = validarLimites;
+    </script>
+</body>
+</html>        .footer-info {
             margin-top: 10px;
             padding-top: 10px;
             border-top: 1px dashed #333;
