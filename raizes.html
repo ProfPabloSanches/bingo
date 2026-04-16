@@ -1,1 +1,279 @@
 
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteador de Raízes Pro - Controle de Histórico</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #6366f1;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 40px;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* Fundo matemático sutil */
+        .math-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.1;
+        }
+
+        .main-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sidebar {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            width: 280px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        h2, h3 { margin: 0 0 15px 0; color: var(--primary); text-align: center; }
+
+        .config-group {
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        label { font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        #resultado-preview {
+            margin: 10px 0;
+            padding: 25px;
+            background: var(--primary);
+            color: white;
+            border-radius: 12px;
+            font-size: 2.2rem;
+            font-weight: bold;
+            text-align: center;
+            border: 4px solid transparent;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            text-align: center;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+
+        .btn-draw { background: var(--primary); color: white; }
+        .btn-reset { background: #ef4444; color: white; }
+        .btn-home { background: #64748b; color: white; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* MODAL GIGANTE */
+        #modal-resultado {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #modal-texto { font-size: 14rem; font-weight: 900; color: var(--primary); margin: 0; line-height: 1; }
+        #modal-valor { font-size: 9rem; color: var(--success); font-family: 'Courier New', monospace; font-weight: bold; }
+        .btn-close-modal { 
+            margin-top: 50px; padding: 20px 60px; font-size: 1.5rem; 
+            background: var(--text); color: white; border-radius: 50px; border: none; cursor: pointer;
+        }
+
+        /* ITENS DO HISTÓRICO - CLICÁVEIS */
+        .history-item {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-radius: 8px;
+        }
+
+        .history-item:hover {
+            background: #eff6ff;
+            color: var(--primary);
+        }
+
+        .history-item span {
+            font-size: 0.8rem;
+            background: #e2e8f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="math-bg"></div>
+
+    <div class="main-card">
+        <h2>Sorteador de Raízes</h2>
+        
+        <div class="config-group">
+            <label>Intervalo de Radicandos</label>
+            <div style="display:flex; gap:10px">
+                <input type="number" id="minVal" value="1">
+                <input type="number" id="maxVal" value="100">
+            </div>
+            
+            <label class="checkbox-group">
+                <input type="checkbox" id="apenasExatas" checked>
+                APRESENTAR APENAS RAÍZES EXATAS.
+            </label>
+        </div>
+
+        <button class="btn btn-draw" onclick="sortear()">SORTEAR UMA RAIZ</button>
+        
+        <div id="resultado-preview"> ? </div>
+
+        <button class="btn btn-reset" onclick="reiniciar()">REINICIAR BINGO</button>
+        <a href="index.html" class="btn btn-home">PÁGINA INICIAL</a>
+    </div>
+
+    <div class="sidebar">
+        <h3>Histórico (Clique para exibir)</h3>
+        <div id="historico"></div>
+    </div>
+
+    <div id="modal-resultado">
+        <div id="modal-texto">√--</div>
+        <div id="modal-valor">= --</div>
+        <button class="btn-close-modal" onclick="fecharModal()">VOLTAR AO SORTEIO</button>
+    </div>
+
+    <script>
+        let sorteadas = new Set();
+
+        function sortear() {
+            const min = parseInt(document.getElementById('minVal').value);
+            const max = parseInt(document.getElementById('maxVal').value);
+            const apenasExatas = document.getElementById('apenasExatas').checked;
+
+            let possiveis = [];
+            for (let i = min; i <= max; i++) {
+                if (apenasExatas) {
+                    if (Math.sqrt(i) % 1 === 0) possiveis.push(i);
+                } else {
+                    possiveis.push(i);
+                }
+            }
+
+            let disponiveis = possiveis.filter(n => !sorteadas.has(n));
+
+            if (disponiveis.length === 0) {
+                alert("Todas as raízes possíveis já foram sorteadas!");
+                return;
+            }
+
+            const sorteado = disponiveis[Math.floor(Math.random() * disponiveis.length)];
+            sorteadas.add(sorteado);
+
+            // Atualiza apenas o preview pequeno
+            document.getElementById('resultado-preview').innerText = `√${sorteado}`;
+            
+            adicionarAoHistorico(sorteado);
+        }
+
+        function adicionarAoHistorico(num) {
+            const lista = document.getElementById('historico');
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            
+            const res = Math.sqrt(num);
+            const formatado = Number.isInteger(res) ? res : res.toFixed(2);
+            
+            item.innerHTML = `<strong>√${num}</strong> <span>Clique para ampliar</span>`;
+            
+            // A janela grande só abre ao clicar aqui
+            item.onclick = () => exibirGrande(num, formatado);
+            
+            lista.prepend(item);
+        }
+
+        function exibirGrande(num, resultado) {
+            document.getElementById('modal-texto').innerText = `√${num}`;
+            document.getElementById('modal-valor').innerText = `= ${resultado}`;
+            document.getElementById('modal-resultado').style.display = 'flex';
+        }
+
+        function fecharModal() {
+            document.getElementById('modal-resultado').style.display = 'none';
+        }
+
+        function reiniciar() {
+            if (confirm("Deseja limpar o histórico e reiniciar o bingo?")) {
+                sorteadas.clear();
+                document.getElementById('resultado-preview').innerText = "?";
+                document.getElementById('historico').innerHTML = "";
+            }
+        }
+
+        // Atalho ESC para fechar
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') fecharModal();
+        });
+    </script>
+</body>
+</html>
