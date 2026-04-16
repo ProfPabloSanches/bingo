@@ -93,7 +93,6 @@
 
         button:hover, .btn-secondary:hover { opacity: 0.9; }
 
-        /* Estilo específico para o botão de voltar */
         .btn-home {
             background-color: #64748b;
             margin-top: 15px;
@@ -133,7 +132,8 @@
     <h2>Configurações</h2>
     
     <div class="info-box">
-        Total de combinações possíveis: <strong id="total-possibilidades">0</strong>
+        Total de combinações possíveis: <strong id="total-possibilidades">0</strong><br>
+        <span style="font-size: 0.75rem; opacity: 0.8;">(Este é o número máximo de sorteios)</span>
     </div>
 
     <label>Eixo X (Mín / Máx)</label>
@@ -174,6 +174,7 @@
         const maxY = parseInt(document.getElementById('maxY').value) || 0;
 
         if (maxX >= minX && maxY >= minY) {
+            // O cálculo é (Max - Min + 1) pois o limite é inclusivo
             const totalX = maxX - minX + 1;
             const totalY = maxY - minY + 1;
             const total = totalX * totalY;
@@ -194,12 +195,12 @@
         const totalPossivel = atualizarPossibilidades();
 
         if (totalPossivel === 0) {
-            alert("Verifique os limites fornecidos.");
+            alert("Verifique os limites fornecidos. O valor Máximo deve ser maior ou igual ao Mínimo.");
             return;
         }
 
         if (coordenadasSorteadas.size >= totalPossivel) {
-            alert("Limite atingido! Não há mais coordenadas únicas neste intervalo.");
+            alert(`Limite atingido! Todas as ${totalPossivel} coordenadas possíveis neste intervalo já foram sorteadas.`);
             return;
         }
 
@@ -212,7 +213,6 @@
 
         coordenadasSorteadas.add(chave);
         
-        // UI Updates
         document.getElementById('resultado-atual').innerText = `(${x}, ${y})`;
         document.getElementById('cont-sorteados').innerText = coordenadasSorteadas.size;
         
@@ -223,13 +223,14 @@
     }
 
     function limpar() {
-        coordenadasSorteadas.clear();
-        document.getElementById('historico').innerHTML = '';
-        document.getElementById('resultado-atual').innerText = '-- , --';
-        document.getElementById('cont-sorteados').innerText = '0';
+        if(confirm("Deseja realmente limpar todo o histórico?")) {
+            coordenadasSorteadas.clear();
+            document.getElementById('historico').innerHTML = '';
+            document.getElementById('resultado-atual').innerText = '-- , --';
+            document.getElementById('cont-sorteados').innerText = '0';
+        }
     }
 
-    // Inicializa o cálculo ao carregar a página
     atualizarPossibilidades();
 </script>
 
