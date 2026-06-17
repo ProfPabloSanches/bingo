@@ -180,7 +180,12 @@
                 sorteadosCartela.forEach(num => {
                     const cell = document.createElement('div');
                     cell.className = 'cell';
-                    cell.innerText = `√${num}`;
+                    
+                    // Calcula o resultado da raiz quadrada
+                    const valorRaiz = Math.sqrt(num);
+                    // Se o número não for inteiro (raiz não exata), limita a duas casas decimais
+                    cell.innerText = (valorRaiz % 1 === 0) ? valorRaiz : valorRaiz.toFixed(2);
+                    
                     grid.appendChild(cell);
                 });
 
