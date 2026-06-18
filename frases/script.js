@@ -35,12 +35,8 @@ function generateMathExpression(result) {
 
 // Reconstrói a folha de forma totalmente dinâmica
 function buildActivity() {
-    const inputElement = document.getElementById('userPhrase');
-    if (!inputElement) return;
-
-    const textInput = inputElement.value.toUpperCase();
-    
-    // Tratamento robusto para remover acentos e manter apenas A-Z e espaços
+    const textInput = document.getElementById('userPhrase').value.toUpperCase();
+    // Remove acentos simples comuns e caracteres especiais para evitar travamentos
     const cleanText = textInput.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Z ]/g, '');
     
     if (cleanText.trim().length === 0) {
@@ -49,36 +45,44 @@ function buildActivity() {
     }
 
     const questionsGrid = document.getElementById('mathQuestions');
-    if (!questionsGrid) return;
+    const answerSlots = document.getElementById('answerSlots');
     
-    // Limpa a grade de perguntas antiga
     questionsGrid.innerHTML = '';
+    answerSlots.innerHTML = '';
 
     let questionCount = 1;
+    let currentLineSlots = "";
 
-    // Passa por cada caractere digitado para gerar as contas
+    // Passa por cada caractere digitado
     for (let i = 0; i < cleanText.length; i++) {
         const char = cleanText[i];
 
-        // Ignora espaços vazios e gera contas apenas para as letras reais
-        if (char !== " ") {
+        if (char === " ") {
+            // Adiciona espaço visual na resposta
+            currentLineSlots += "&nbsp;&nbsp;&nbsp;&nbsp;";
+        } else {
             const alphabetIndex = alphabet.indexOf(char) + 1;
             
-            if (alphabetIndex > 0) {
-                // Gera e adiciona a linha de comando matemático correspondente
-                const expr = generateMathExpression(alphabetIndex);
-                const qItem = document.createElement('div');
-                qItem.classList.add('question-item');
-                qItem.innerHTML = `<span>Letra ${questionCount}) &nbsp; <strong>${expr}</strong> = </span><div class="blank-line"></div>`;
-                questionsGrid.appendChild(qItem);
+            // 1. Gera e adiciona a linha de comando matemático correspondente
+            const expr = generateMathExpression(alphabetIndex);
+            const qItem = document.createElement('div');
+            qItem.classList.add('question-item');
+            qItem.innerHTML = `<span>Letra ${questionCount}) &nbsp; <strong>${expr}</strong> = </span><div class="blank-line"></div>`;
+            questionsGrid.appendChild(qItem);
 
-                questionCount++;
-            }
+            // 2. Adiciona o slot indicador na resposta final vinculando ao número da pergunta
+            currentLineSlots += `<span style="border-bottom: 2px solid #000; padding: 0 4px; margin-right: 5px; font-size:16px;"><sub>${questionCount}</sub>__</span>`;
+            questionCount++;
         }
     }
+
+    // Renderiza as lacunas na tela
+    answerSlots.innerHTML = currentLineSlots;
+
+    // A linha que disparava o window.print() automaticamente foi removida daqui!
 }
 
-// Inicia com a palavra padrão assim que a página carrega completamente
-window.addEventListener('DOMContentLoaded', () => {
+// Inicia com uma palavra padrão ao carregar
+window.onload = function() {
     buildActivity();
-});
+};
