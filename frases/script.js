@@ -45,41 +45,30 @@ function buildActivity() {
     }
 
     const questionsGrid = document.getElementById('mathQuestions');
-    const answerSlots = document.getElementById('answerSlots');
     
+    // Limpa a grade de perguntas antiga
     questionsGrid.innerHTML = '';
-    answerSlots.innerHTML = '';
 
     let questionCount = 1;
-    let currentLineSlots = "";
 
-    // Passa por cada caractere digitado
+    // Passa por cada caractere digitado para gerar apenas as contas
     for (let i = 0; i < cleanText.length; i++) {
         const char = cleanText[i];
 
-        if (char === " ") {
-            // Adiciona espaço visual na resposta
-            currentLineSlots += "&nbsp;&nbsp;&nbsp;&nbsp;";
-        } else {
+        // Ignora espaços vazios e gera contas apenas para as letras reais
+        if (char !== " ") {
             const alphabetIndex = alphabet.indexOf(char) + 1;
             
-            // 1. Gera e adiciona a linha de comando matemático correspondente
+            // Gera e adiciona a linha de comando matemático correspondente
             const expr = generateMathExpression(alphabetIndex);
             const qItem = document.createElement('div');
             qItem.classList.add('question-item');
             qItem.innerHTML = `<span>Letra ${questionCount}) &nbsp; <strong>${expr}</strong> = </span><div class="blank-line"></div>`;
             questionsGrid.appendChild(qItem);
 
-            // 2. Adiciona o slot indicador na resposta final vinculando ao número da pergunta
-            currentLineSlots += `<span style="border-bottom: 2px solid #000; padding: 0 4px; margin-right: 5px; font-size:16px;"><sub>${questionCount}</sub>__</span>`;
             questionCount++;
         }
     }
-
-    // Renderiza as lacunas na tela
-    answerSlots.innerHTML = currentLineSlots;
-
-    // A linha que disparava o window.print() automaticamente foi removida daqui!
 }
 
 // Inicia com uma palavra padrão ao carregar
