@@ -64,6 +64,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 30px; /* Espaço visual entre as páginas na tela */
 }
 
 .header {
@@ -125,37 +126,6 @@ body {
     font-weight: bold;
 }
 
-/* Estrutura das Questões Matemáticas */
-.questions-container {
-    width: 100%;
-}
-
-.questions-container h3 {
-    border-bottom: 1px solid #000;
-    padding-bottom: 5px;
-    margin-bottom: 20px;
-    font-size: 16px;
-}
-
-.questions-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 22px 40px;
-}
-
-.question-item {
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-}
-
-.blank-line {
-    flex-grow: 1;
-    border-bottom: 1px dashed #000;
-    margin-left: 8px;
-    height: 20px;
-}
-
 /* Espaço para a resposta da Frase Secreta */
 .phrase-answer-zone {
     width: 100%;
@@ -185,11 +155,47 @@ body {
     white-space: nowrap; 
 }
 
+/* Estrutura das Questões Matemáticas */
+.questions-container {
+    width: 100%;
+    /* Força que este container comece obrigatoriamente em uma nova página A4 na impressão */
+    break-before: page;
+    page-break-before: always; 
+    margin-top: 20mm; /* Margem superior para simular o topo da folha na tela */
+}
+
+.questions-container h3 {
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.questions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px 40px;
+}
+
+.question-item {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.blank-line {
+    flex-grow: 1;
+    border-bottom: 1px dashed #000;
+    margin-left: 8px;
+    height: 20px;
+}
+
 /* --- Regras para Impressão Física 🖨️ --- */
 @media print {
     body { 
         background-color: transparent; 
         padding: 0; 
+        margin: 0;
     }
     .no-print-area { 
         display: none !important; 
@@ -199,8 +205,18 @@ body {
         padding: 0; 
         width: 100%; 
         min-height: auto; 
+        margin-bottom: 0;
     }
+    
+    /* Garante o comportamento correto de quebra de página de acordo com os padrões modernos e antigos */
+    .questions-container {
+        break-before: page !important;
+        page-break-before: always !important;
+        margin-top: 0; /* Reseta o espaçamento virtual da tela na impressão real */
+    }
+
     .questions-grid { 
         page-break-inside: avoid; 
+        break-inside: avoid;
     }
 }
