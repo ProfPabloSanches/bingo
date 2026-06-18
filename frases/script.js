@@ -35,8 +35,12 @@ function generateMathExpression(result) {
 
 // Reconstrói a folha de forma totalmente dinâmica
 function buildActivity() {
-    const textInput = document.getElementById('userPhrase').value.toUpperCase();
-    // Remove acentos simples comuns e caracteres especiais para evitar travamentos
+    const inputElement = document.getElementById('userPhrase');
+    if (!inputElement) return;
+
+    const textInput = inputElement.value.toUpperCase();
+    
+    // Tratamento robusto para remover acentos e manter apenas A-Z e espaços
     const cleanText = textInput.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Z ]/g, '');
     
     if (cleanText.trim().length === 0) {
@@ -45,13 +49,14 @@ function buildActivity() {
     }
 
     const questionsGrid = document.getElementById('mathQuestions');
+    if (!questionsGrid) return;
     
     // Limpa a grade de perguntas antiga
     questionsGrid.innerHTML = '';
 
     let questionCount = 1;
 
-    // Passa por cada caractere digitado para gerar apenas as contas
+    // Passa por cada caractere digitado para gerar as contas
     for (let i = 0; i < cleanText.length; i++) {
         const char = cleanText[i];
 
@@ -59,19 +64,21 @@ function buildActivity() {
         if (char !== " ") {
             const alphabetIndex = alphabet.indexOf(char) + 1;
             
-            // Gera e adiciona a linha de comando matemático correspondente
-            const expr = generateMathExpression(alphabetIndex);
-            const qItem = document.createElement('div');
-            qItem.classList.add('question-item');
-            qItem.innerHTML = `<span>Letra ${questionCount}) &nbsp; <strong>${expr}</strong> = </span><div class="blank-line"></div>`;
-            questionsGrid.appendChild(qItem);
+            if (alphabetIndex > 0) {
+                // Gera e adiciona a linha de comando matemático correspondente
+                const expr = generateMathExpression(alphabetIndex);
+                const qItem = document.createElement('div');
+                qItem.classList.add('question-item');
+                qItem.innerHTML = `<span>Letra ${questionCount}) &nbsp; <strong>${expr}</strong> = </span><div class="blank-line"></div>`;
+                questionsGrid.appendChild(qItem);
 
-            questionCount++;
+                questionCount++;
+            }
         }
     }
 }
 
-// Inicia com uma palavra padrão ao carregar
-window.onload = function() {
+// Inicia com a palavra padrão assim que a página carrega completamente
+window.addEventListener('DOMContentLoaded', () => {
     buildActivity();
-};
+});
