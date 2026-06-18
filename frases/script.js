@@ -1,0 +1,88 @@
+const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+// Gerador randômico de equações matemáticas estruturadas
+function generateMathExpression(result) {
+    const operations = ['soma', 'subtracao', 'multiplicacao', 'expressao', 'exponenciacao', 'radiciacao'];
+    const chosenOp = operations[Math.floor(Math.random() * operations.length)];
+
+    switch (chosenOp) {
+        case 'soma':
+            const s1 = Math.floor(Math.random() * (result - 1)) + 1;
+            return `${s1} + ${result - s1}`;
+        case 'subtracao':
+            const sub2 = Math.floor(Math.random() * 12) + 4;
+            return `${result + sub2} - ${sub2}`;
+        case 'multiplicacao':
+            let divisors = [];
+            for(let i=1; i<=result; i++) { if(result % i === 0) divisors.push(i); }
+            const d1 = divisors[Math.floor(Math.random() * divisors.length)];
+            return `${d1} × ${result / d1}`;
+        case 'exponenciacao':
+            for (let base = 2; base <= 5; base++) {
+                if (base * base === result) return `${base}²`;
+                if (base * base * base === result) return `${base}³`;
+            }
+            return `${result}¹`;
+        case 'radiciacao':
+            return `√${result * result}`;
+        case 'expressao':
+            const a = Math.floor(Math.random() * 3) + 2;
+            const b = Math.floor(Math.random() * 3) + 2;
+            const diff = result - (a * b);
+            return diff >= 0 ? `(${a} × ${b}) + ${diff}` : `(${a} × ${b}) - ${Math.abs(diff)}`;
+    }
+}
+
+// Reconstrói a folha de forma totalmente dinâmica
+function buildActivity() {
+    const textInput = document.getElementById('userPhrase').value.toUpperCase();
+    // Remove acentos simples comuns e caracteres especiais para evitar travamentos
+    const cleanText = textInput.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Z ]/g, '');
+    
+    if (cleanText.trim().length === 0) {
+        alert("Por favor, digite uma frase contendo letras.");
+        return;
+    }
+
+    const questionsGrid = document.getElementById('mathQuestions');
+    const answerSlots = document.getElementById('answerSlots');
+    
+    questionsGrid.innerHTML = '';
+    answerSlots.innerHTML = '';
+
+    let questionCount = 1;
+    let currentLineSlots = "";
+
+    // Passa por cada caractere digitado
+    for (let i = 0; i < cleanText.length; i++) {
+        const char = cleanText[i];
+
+        if (char === " ") {
+            // Adiciona espaço visual na resposta
+            currentLineSlots += "&nbsp;&nbsp;&nbsp;&nbsp;";
+        } else {
+            const alphabetIndex = alphabet.indexOf(char) + 1;
+            
+            // 1. Gera e adiciona a linha de comando matemático correspondente
+            const expr = generateMathExpression(alphabetIndex);
+            const qItem = document.createElement('div');
+            qItem.classList.add('question-item');
+            qItem.innerHTML = `<span>Letra ${questionCount}) &nbsp; <strong>${expr}</strong> = </span><div class="blank-line"></div>`;
+            questionsGrid.appendChild(qItem);
+
+            // 2. Adiciona o slot indicador na resposta final vinculando ao número da pergunta
+            currentLineSlots += `<span style="border-bottom: 2px solid #000; padding: 0 4px; margin-right: 5px; font-size:16px;"><sub>${questionCount}</sub>__</span>`;
+            questionCount++;
+        }
+    }
+
+    // Renderiza as lacunas na tela
+    answerSlots.innerHTML = currentLineSlots;
+
+    // A linha que disparava o window.print() automaticamente foi removida daqui!
+}
+
+// Inicia com uma palavra padrão ao carregar
+window.onload = function() {
+    buildActivity();
+};
