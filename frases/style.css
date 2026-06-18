@@ -170,10 +170,10 @@ body {
     margin-bottom: 15px;
 }
 
-/* Formatação inteligente para que as lacunas caibam na folha A4 */
+/* Formatação inteligente para que as lacunas caibam na folha A4 com espaçamento simples */
 .letter-slots {
     font-size: 22px;
-    line-height: 2.5; 
+    line-height: 1; /* Configurado para espaçamento simples */
     display: flex;
     flex-wrap: wrap; 
     gap: 15px 2px;  
