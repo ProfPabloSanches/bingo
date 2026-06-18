@@ -12,19 +12,19 @@
     <!-- Painel de Entrada de Texto (Não aparece no papel) -->
     <div class="no-print-area">
         <h2>✍️ Decodificador Matemático</h2>
-        <h3><strong>ATENÇÃO</strong>Inserir textos muito longos pode ocasionar erros de geração ou formatação da pagina de impressão.</h3>
+        <h3><strong>ATENÇÃO:</strong> Inserir textos muito longos pode ocasionar erros de geração ou formatação da página de impressão.</h3>
         <p>Digite uma palavra ou frase secreta (apenas letras de A a Z e espaços):</p>
         <input type="text" id="userPhrase" class="input-box" value="MATEMATICA" placeholder="Ex: ESTUDAR E BOM">
         <br>
         
-        <!-- Botões Separados conforme solicitado -->
+        <!-- Botões Separados -->
         <button class="btn" style="background-color: #3498db;" onclick="buildActivity()">🎲 Gerar Atividade</button>
         <button class="btn" style="background-color: #2ecc71;" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
         <button class="btn" style="background-color: #95a5a6;" onclick="document.getElementById('userPhrase').value=''; document.getElementById('userPhrase').focus();">Apagar Tudo</button>
         <a href="https://profpablosanches.github.io/bingo/index.html" class="btn">🏠</a>
     </div>
 
-    <!-- Página Única de Atividade (A4) -->
+    <!-- PÁGINA 1 (A4) - Cabeçalho, Orientações, Tabela e Frase Descoberta -->
     <div class="a4-page">
         <div class="header">
             <h1>ATIVIDADE: DECODIFICADOR MATEMÁTICO</h1>
@@ -57,18 +57,21 @@
             </table>
         </div>
 
-        <!-- Seção Dinâmica de Perguntas -->
-        <div class="questions-container">
-            <h3>🧮 Expressões Matemáticas</h3>
-            <div class="questions-grid" id="mathQuestions">
-                <!-- Preenchido dinamicamente via JS -->
-            </div>
-        </div>
-
-        <!-- Lacunas Dinâmicas para a Palavra Final -->
+        <!-- Espaço para a resposta da Frase Secreta (Mudou para antes das expressões) -->
         <div class="phrase-answer-zone">
             <p>✍️ FRASE DESCOBERTA:</p>
             <div class="letter-slots" id="answerSlots">
+                <!-- Preenchido dinamicamente via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA 2 (A4) - Apenas as Expressões Matemáticas -->
+    <div class="a4-page">
+        <!-- Seção Dinâmica de Perguntas (Agora isolada e empurrada corretamente) -->
+        <div class="questions-container">
+            <h3>🧮 Expressões Matemáticas</h3>
+            <div class="questions-grid" id="mathQuestions">
                 <!-- Preenchido dinamicamente via JS -->
             </div>
         </div>
