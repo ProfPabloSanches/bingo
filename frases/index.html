@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decodificador Matemático Customizado - A4</title>
+    <title>Decodificador Matemático</title>
     <!-- Vinculação do arquivo CSS externo -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,8 +11,9 @@
 
     <!-- Painel de Entrada de Texto (Não aparece no papel) -->
     <div class="no-print-area">
-        <h2>✍️ Criar Atividade Customizada</h2>
-        <p>Digite a palavra ou frase secreta (apenas letras de A a Z e espaços):</p>
+        <h2>✍️ Decodificador Matemático</h2>
+        <h3><strong>ATENÇÃO</strong>Inserir textos muito longos pode ocasionar erros de geração ou formatação da pagina de impressão.</h3>
+        <p>Digite uma palavra ou frase secreta (apenas letras de A a Z e espaços):</p>
         <input type="text" id="userPhrase" class="input-box" value="MATEMATICA" placeholder="Ex: ESTUDAR E BOM">
         <br>
         
@@ -20,7 +21,7 @@
         <button class="btn" style="background-color: #3498db;" onclick="buildActivity()">🎲 Gerar Atividade</button>
         <button class="btn" style="background-color: #2ecc71;" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
         <button class="btn" style="background-color: #95a5a6;" onclick="document.getElementById('userPhrase').value=''; document.getElementById('userPhrase').focus();">Apagar Tudo</button>
-        <a href="https://profpablosanches.github.io/bingo/index.html" class="btn">🏠 Início</a>
+        <a href="https://profpablosanches.github.io/bingo/index.html" class="btn">🏠</a>
     </div>
 
     <!-- Página Única de Atividade (A4) -->
@@ -34,7 +35,7 @@
         </div>
 
         <div class="instructions">
-            <strong>Instruções:</strong> Resolva cada uma das expressões matemáticas abaixo. O resultado numérico final de cada conta representa a posição de uma letra no alfabeto, conforme a tabela de referência. Descubra os números, encontre as respectivas letras e complete a frase secreta no final da página!
+            <strong>Instruções:</strong> Resolva cada uma das expressões matemáticas abaixo. O resultado numérico final de cada conta representa a posição de uma letra no alfabeto, conforme a tabela de referência. Descubra os números, encontre as respectivas letras e complete a frase secreta no final!
         </div>
 
         <!-- Tabela Fixa de Referência Alfabética -->
