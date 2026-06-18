@@ -1,50 +1,45 @@
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-// Gerador de expressão matemática única e altamente complexa (mistura várias operações)
+// Gerador que obrigatoriamente combina as 6 operações em uma única linha
 function generateMathExpression(result) {
-  // 1. Escolhe uma base de potência ou raiz quadrada para iniciar o bloco complexo
-  const bases =;
-  const base = bases[Math.floor(Math.random() * bases.length)];
-  const isPower = Math.random() > 0.5;
-  
-  let bloco1Valor;
-  let bloco1Texto;
+  // 1. RADICIAÇÃO (Gera uma raiz exata entre 2 e 5)
+  const raizBase = Math.floor(Math.random() * 4) + 2; // 2 a 5
+  const raizValor = raizBase * raizBase;
+  let expr = `√${raizValor}`; // Valor atual: raizBase
+  let currentVal = raizBase;
 
-  if (isPower) {
-    bloco1Valor = base * base;
-    bloco1Texto = `${base}²`;
-  } else {
-    bloco1Valor = base;
-    bloco1Texto = `√${base * base}`;
-  }
+  // 2. POTENCIAÇÃO (Eleva uma base entre 2 e 3)
+  const potBase = Math.floor(Math.random() * 2) + 2; // 2 ou 3
+  expr = `(${expr} + ${potBase}²)`;
+  currentVal = currentVal + (potBase * potBase); // Soma + Potência aplicadas
 
-  // 2. Mistura Multiplicação e Divisão no segundo bloco: ((Bloco1 + A) × B)
-  const a = Math.floor(Math.random() * 5) + 2; // 2 a 6
-  const b = Math.floor(Math.random() * 3) + 2; // 2 a 4
-  
-  const bloco2Valor = (bloco1Valor + a) * b;
-  const bloco2Texto = `((${bloco1Texto} + ${a}) × ${b})`;
+  // 3. MULTIPLICAÇÃO (Multiplica por um fator pequeno de 2 a 4)
+  const mult = Math.floor(Math.random() * 3) + 2;
+  expr = `(${expr} × ${mult})`;
+  currentVal = currentVal * mult;
 
-  // 3. Introduz uma Divisão exata: (Bloco2 ÷ C)
-  // Encontra um divisor válido maior que 1 para o bloco2
+  // 4. SUBTRAÇÃO (Garante que o número não fique negativo ou zerado)
+  const sub = Math.floor(Math.random() * 5) + 2; // 2 a 6
+  expr = `(${expr} - ${sub})`;
+  currentVal = currentVal - sub;
+
+  // 5. DIVISÃO (Encontra um divisor perfeito para manter o número inteiro)
   let divisores = [];
   for (let i = 2; i <= 6; i++) {
-    if (bloco2Valor % i === 0) divisores.push(i);
+    if (currentVal % i === 0) divisores.push(i);
   }
-  
-  // Fallback seguro caso não encontre divisores no laço
-  const c = divisores.length > 0 ? divisores[Math.floor(Math.random() * divisores.length)] : 2;
-  const bloco3Valor = Math.floor(bloco2Valor / c);
-  const bloco3Texto = `(${bloco2Texto} ÷ ${c})`;
+  // Se não houver divisor válido, usa 1 por segurança (o que mantém o inteiro)
+  const div = divisores.length > 0 ? divisores[Math.floor(Math.random() * divisores.length)] : 1;
+  expr = `(${expr} ÷ ${div})`;
+  currentVal = Math.floor(currentVal / div);
 
-  // 4. Finaliza com Soma ou Subtração para atingir o valor exato do caractere (result)
-  // Estrutura final: Bloco3 + X = result  => X = result - Bloco3
-  const x = result - bloco3Valor;
-
+  // 6. SOMA FINAL (Ajusta o valor para bater exatamente com o caractere desejado)
+  const x = result - currentVal;
   if (x >= 0) {
-    return `${bloco3Texto} + ${x}`;
+    return `${expr} + ${x}`;
   } else {
-    return `${bloco3Texto} - ${Math.abs(x)}`;
+    // Caso o valor atual passe do resultado da letra, compensa subtraindo no final
+    return `${expr} - ${Math.abs(x)}`;
   }
 }
 
