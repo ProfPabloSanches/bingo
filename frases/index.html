@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decodificador Matemático Customizado - A4</title>
+    <!-- Vinculação do arquivo CSS externo -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Painel de Entrada de Texto (Não aparece no papel) -->
+    <div class="no-print-area">
+        <h2>✍️ Criar Atividade Customizada</h2>
+        <p>Digite a palavra ou frase secreta (apenas letras de A a Z e espaços):</p>
+        <input type="text" id="userPhrase" class="input-box" value="MATEMATICA" placeholder="Ex: ESTUDAR E BOM">
+        <br>
+        
+        <!-- Botões Separados conforme solicitado -->
+        <button class="btn" style="background-color: #3498db;" onclick="buildActivity()">🎲 Gerar Atividade</button>
+        <button class="btn" style="background-color: #2ecc71;" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+        <button class="btn" style="background-color: #95a5a6;" onclick="document.getElementById('userPhrase').value=''; document.getElementById('userPhrase').focus();">🔄 Voltar ao Início</button>
+    </div>
+
+    <!-- Página Única de Atividade (A4) -->
+    <div class="a4-page">
+        <div class="header">
+            <h1>ATIVIDADE: DECODIFICADOR MATEMÁTICO</h1>
+            <div class="student-info">
+                <span>NOME: ____________________________________________________</span>
+                <span>DATA: ___/___/______</span>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <strong>Instruções:</strong> Resolva cada uma das expressões matemáticas abaixo. O resultado numérico final de cada conta representa a posição de uma letra no alfabeto, conforme a tabela de referência. Descubra os números, encontre as respectivas letras e complete a frase secreta no final da página!
+        </div>
+
+        <!-- Tabela Fixa de Referência Alfabética -->
+        <div class="alphabet-table-wrapper">
+            <h3>📋 Tabela de Referência Alfabética (A à Z)</h3>
+            <table class="alphabet-table">
+                <tr>
+                    <th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th><th>J</th><th>K</th><th>L</th><th>M</th>
+                </tr>
+                <tr>
+                    <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td>
+                </tr>
+                <tr>
+                    <th>N</th><th>O</th><th>P</th><th>Q</th><th>R</th><th>S</th><th>T</th><th>U</th><th>V</th><th>W</th><th>X</th><th>Y</th><th>Z</th>
+                </tr>
+                <tr>
+                    <td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td><td>26</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Seção Dinâmica de Perguntas -->
+        <div class="questions-container">
+            <h3>🧮 Expressões Matemáticas</h3>
+            <div class="questions-grid" id="mathQuestions">
+                <!-- Preenchido dinamicamente via JS -->
+            </div>
+        </div>
+
+        <!-- Lacunas Dinâmicas para a Palavra Final -->
+        <div class="phrase-answer-zone">
+            <p>✍️ FRASE DESCOBERTA:</p>
+            <div class="letter-slots" id="answerSlots">
+                <!-- Preenchido dinamicamente via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Vinculação do arquivo JavaScript externo -->
+    <script src="script.js"></script>
+</body>
+</html>
