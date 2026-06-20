@@ -2,78 +2,110 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=2.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal de Jogos Matemáticos</title>
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg: #f1f5f9;
-            --card-bg: #ffffff;
-            --text: #1e293b;
-            --disabled: #94a3b8;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --card-bg: rgba(255, 255, 255, 0.06);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --btn-bg: rgba(255, 255, 255, 0.04);
+            --btn-hover: #38bdf8;
+            --disabled: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+            position: relative;
         }
 
         /* Camada de fundo com fórmulas */
         .math-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
+            z-index: 0;
             pointer-events: none;
             overflow: hidden;
             user-select: none;
-            opacity: 0.1;
-            font-family: "Times New Roman", serif;
-            font-style: italic;
-            color: var(--text);
+            opacity: 0.04;
+            color: var(--text-main);
+            font-weight: 600;
         }
 
         .formula { position: absolute; white-space: nowrap; }
 
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-
         h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
             margin-bottom: 3rem;
-            color: var(--primary);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        /* Estrutura de 4 Colunas */
+        /* Estrutura de Grid */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            gap: 24px;
             width: 100%;
-            max-width: 1100px;
+            max-width: 1200px;
             position: relative;
             z-index: 1;
+            margin-bottom: 50px;
         }
 
         .column {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .column:hover {
+            transform: translateY(-2px);
+            border-color: rgba(56, 189, 248, 0.2);
         }
 
         .column-title {
-            font-size: 0.9rem;
-            font-weight: 800;
-            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent);
             text-transform: uppercase;
-            text-align: center;
-            margin-bottom: 5px;
-            letter-spacing: 1px;
+            margin-bottom: 8px;
+            letter-spacing: 1.2px;
+            border-left: 3px solid var(--accent);
+            padding-left: 8px;
         }
 
         .btn-link {
@@ -81,137 +113,245 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 20px 15px;
-            background-color: var(--card-bg);
-            color: var(--primary);
+            padding: 16px;
+            background-color: var(--btn-bg);
+            color: var(--text-main);
             text-decoration: none;
             border-radius: 12px;
-            font-weight: bold;
-            font-size: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            min-height: 70px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            min-height: 68px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .btn-link:not(.disabled):hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            background-color: var(--primary);
-            color: white;
+            transform: translateY(-2px);
+            background-color: var(--btn-hover);
+            color: #0f172a;
+            box-shadow: 0 8px 20px -4px rgba(56, 189, 248, 0.4);
+            border-color: transparent;
         }
 
         .disabled {
-            background-color: #e2e8f0;
-            color: var(--disabled);
+            background-color: transparent;
+            color: var(--text-muted);
+            opacity: 0.35;
             cursor: not-allowed;
-            border: 1px dashed var(--disabled);
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            font-weight: 500;
         }
 
-        @media (max-width: 900px) {
+        /* Botão Flutuante Info (Canto Inferior Direito) */
+        .info-floating-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 50%;
+            color: var(--text-main);
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: all 0.25s ease;
+        }
+
+        .info-floating-btn:hover {
+            transform: scale(1.1);
+            background-color: var(--accent);
+            color: #0f172a;
+            border-color: transparent;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+        }
+
+        /* Estrutura do Popup (Modal) */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-card {
+            background: rgba(30, 27, 75, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 32px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-card h2 {
+            font-size: 1.5rem;
+            color: var(--text-main);
+            margin-bottom: 16px;
+        }
+
+        .modal-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .modal-card .owner-name {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .close-modal-btn {
+            margin-top: 12px;
+            padding: 12px 24px;
+            background-color: var(--btn-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .close-modal-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        /* Responsividade Inteligente */
+        @media (max-width: 1024px) {
             .menu-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
-        @media (max-width: 500px) {
+        @media (max-width: 600px) {
             .menu-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 1.8rem; margin-bottom: 2rem; }
+            body { padding: 20px 16px; }
+            .info-floating-btn { bottom: 16px; right: 16px; }
         }
-      
-      /* Camada de fundo com fórmulas sutis (Opacidade Dobrada) */
-.math-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
-    overflow: hidden;
-    user-select: none;
-    opacity: 0.1; /* Opacidade em 10% */
-    font-family: "Times New Roman", serif;
-    font-style: italic;
-    color: var(--text);
-}
-
-.formula {
-    position: absolute;
-    white-space: nowrap;
-}
-      
     </style>
 </head>
 <body>
 
+    <!-- Fundo Matemático -->
     <div class="math-bg">
-        <div class="formula" style="top: 5%; left: 5%;">a² + b² = c²</div>
-        <div class="formula" style="top: 15%; right: 10%;">E = mc²</div>
-        <div class="formula" style="bottom: 20%; left: 8%;">x = [-b ± √Δ] / 2a</div>
-        <div class="formula" style="top: 40%; left: 2%;">π ≈ 3,14</div>
-        <div class="formula" style="bottom: 10%; right: 5%;">e^{iπ} + 1 = 0</div>
-        <div class="formula" style="top: 60%; right: 15%;">sin²θ + cos²θ = 1</div>
+        <div class="formula" style="top: 5%; left: 5%; font-size: 2rem;">a² + b² = c²</div>
+        <div class="formula" style="top: 15%; right: 10%; font-size: 1.5rem;">E = mc²</div>
+        <div class="formula" style="bottom: 20%; left: 8%; font-size: 1.8rem;">x = [-b ± √(b² - 4ac)] / 2a</div>
+        <div class="formula" style="top: 40%; left: 2%; font-size: 2.5rem;">π ≈ 3,14159</div>
+        <div class="formula" style="bottom: 10%; right: 5%; font-size: 2.2rem;">e^{iπ} + 1 = 0</div>
+        <div class="formula" style="top: 5%; left: 45%; font-size: 1.2rem;">f(x) = ∫ f(x)dx</div>
+        <div class="formula" style="bottom: 40%; right: 2%; font-size: 1.6rem;">∑ n = n(n+1)/2</div>
+        <div class="formula" style="top: 60%; right: 15%; font-size: 1.4rem;">sin²θ + cos²θ = 1</div>
+        <div class="formula" style="bottom: 5%; left: 40%; font-size: 1.3rem;">V = 4/3 πr³</div>
     </div>
 
     <h1>Portal de Jogos Matemáticos</h1>
 
     <div class="menu-grid">
+        <!-- Categoria 1 -->
         <div class="column">
-            <div class="column-title">Operações com Potências</div>
+            <div class="column-title">Potências</div>
             <a href="potencia.html" class="btn-link">Bingo de Potências</a>
-            <a href="gerador_cartelas.html" class="btn-link">Gerador de Cartela de Potências</a>
+            <a href="gerador_cartelas.html" class="btn-link">Gerador de Cartela</a>
         </div>
 
+        <!-- Categoria 2 -->
         <div class="column">
-            <div class="column-title">Operações com Coordenadas</div>
+            <div class="column-title">Coordenadas</div>
             <a href="cartesiano.html" class="btn-link">Bingo de Coordenadas</a>
-            <a href="gerador_cartelas_cartesiano.html" class="btn-link">Gerador de Cartela de Coordenadas</a>
-            <a href="gerador_planos_cartesianos.html" class="btn-link">Gerador de Cartelas do Plano Cartesiano</a>
+            <a href="gerador_cartelas_cartesiano.html" class="btn-link">Gerador de Cartela</a>
+            <a href="gerador_planos_cartesianos.html" class="btn-link">Gerador de Planos</a>
         </div>
 
+        <!-- Categoria 3 -->
         <div class="column">
-            <div class="column-title">Operações com Raízes</div>
+            <div class="column-title">Raízes</div>
             <a href="raizes.html" class="btn-link">Bingo de Raízes</a>
-            <a href="gerador_cartela_raizes.html" class="btn-link">Gerador de Cartela de Raízes</a>
+            <a href="gerador_cartela_raizes.html" class="btn-link">Gerador de Cartela</a>
         </div>
 
+        <!-- Categoria 4 -->
         <div class="column">
             <div class="column-title">Variados</div>
             <a href="frases/index.html" class="btn-link">Caça Palavras</a>
-            <a href="#" class="btn-link disabled">Em Desenvolvimento</a>
-            <a href="#" class="btn-link disabled">Em Desenvolvimento</a>
+            <a href="#" class="btn-link disabled">Em Breve</a>
+            <a href="#" class="btn-link disabled">Em Breve</a>
         </div>
     </div>
 
-  <div class="math-bg">
-    <div class="formula" style="top: 5%; left: 5%; font-size: 2rem;">a² + b² = c²</div>
-    <div class="formula" style="top: 15%; right: 10%; font-size: 1.5rem;">E = mc²</div>
-    <div class="formula" style="bottom: 20%; left: 8%; font-size: 1.8rem;">x = [-b ± √(b² - 4ac)] / 2a</div>
-    <div class="formula" style="top: 40%; left: 2%; font-size: 2.5rem;">π ≈ 3,14159</div>
-    <div class="formula" style="bottom: 10%; right: 5%; font-size: 2.2rem;">e^{iπ} + 1 = 0</div>
-    <div class="formula" style="top: 5%; left: 45%; font-size: 1.2rem;">f(x) = ∫ f(x)dx</div>
-    <div class="formula" style="bottom: 40%; right: 2%; font-size: 1.6rem;">∑ n = n(n+1)/2</div>
-    <div class="formula" style="top: 60%; right: 15%; font-size: 1.4rem;">sin²θ + cos²θ = 1</div>
-    <div class="formula" style="bottom: 5%; left: 40%; font-size: 1.3rem;">V = 4/3 πr³</div>
+    <!-- Botão Flutuante (Info) -->
+    <button class="info-floating-btn" id="openModalBtn" title="Informações do Proprietário">i</button>
 
-    <div class="formula" style="top: 25%; left: 15%; font-size: 1.4rem;">F = m · a</div>
-    <div class="formula" style="top: 50%; right: 30%; font-size: 1.8rem;">A = π · r²</div>
-    <div class="formula" style="bottom: 55%; left: 20%; font-size: 1.3rem;">log(ab) = log a + log b</div>
-    <div class="formula" style="top: 75%; left: 5%; font-size: 2.1rem;">Δ = b² - 4ac</div>
-    <div class="formula" style="bottom: 30%; right: 40%; font-size: 1.5rem;">tan θ = sin θ / cos θ</div>
-    <div class="formula" style="top: 85%; right: 10%; font-size: 1.7rem;">PV = nRT</div>
-    <div class="formula" style="top: 10%; left: 25%; font-size: 1.2rem;">y = mx + b</div>
-    <div class="formula" style="bottom: 15%; left: 25%; font-size: 1.9rem;">d = √(x₂-x₁)² + (y₂-y₁)²</div>
-    <div class="formula" style="top: 65%; left: 45%; font-size: 1.5rem;">lim (x→∞) 1/x = 0</div>
+    <!-- Estrutura do Popup (Modal) -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-card">
+            <h2>Sobre o Proprietário</h2>
+            <p class="owner-name">Pablo Augusto Sanches</p>
+            <p>Engenheiro Civil</p>
+            <p>Professor de Física e Matemática.</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Contato:</p>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">pablosanches@prof.educacao.sp.gov.br</p>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">pabloaugustosanches@gmail.com</p>
+            <button class="close-modal-btn" id="closeModalBtn">Fechar</button>
+        </div>
+    </div>
 
-    <div class="formula" style="top: 35%; right: 5%; font-size: 1.6rem;">P = F / A</div>
-    <div class="formula" style="bottom: 45%; left: 2%; font-size: 1.4rem;">Q = m · c · ΔT</div>
-    <div class="formula" style="top: 55%; left: 10%; font-size: 1.2rem;">(x + a)ⁿ = ∑ (ⁿₖ) xᵏ aⁿ⁻ᵏ</div>
-    <div class="formula" style="bottom: 5%; right: 25%; font-size: 2.3rem;">φ ≈ 1,618</div>
-    <div class="formula" style="top: 2%; right: 40%; font-size: 1.4rem;">v = λ · f</div>
-    <div class="formula" style="bottom: 70%; right: 20%; font-size: 1.1rem;">det(A - λI) = 0</div>
-    <div class="formula" style="top: 45%; right: 45%; font-size: 1.3rem;">S = s₀ + v₀t + at²/2</div>
-    <div class="formula" style="bottom: 80%; left: 35%; font-size: 1.6rem;">τ = r F sinθ</div>
-    <div class="formula" style="top: 20%; left: 60%; font-size: 1.8rem;">C = 2πr</div>
-</div>
-  
+    <!-- Script de Funcionamento do Popup -->
+    <script>
+        const modal = document.getElementById('modalOverlay');
+        const openBtn = document.getElementById('openModalBtn');
+        const closeBtn = document.getElementById('closeModalBtn');
+
+        // Abre o popup
+        openBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        // Fecha o popup no botão
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // Fecha o popup clicando fora do card informativo
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+    </script>
+    
 </body>
 </html>
