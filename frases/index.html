@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decodificador Matemático Pro</title>
+    <title>Decodificador Matemático</title>
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
@@ -216,11 +216,11 @@
         .slot-index { font-size: 0.75rem; color: var(--accent); font-family: 'Courier New', monospace; }
         .slot-space { width: 16px; }
 
-        /* Grid de Expressões Matemáticas na Web */
+        /* Grid de Expressões Matemáticas na Web (2 Colunas) */
         .questions-container { width: 100%; }
         .questions-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 14px;
             margin-top: 10px;
         }
@@ -236,7 +236,17 @@
             height: 85px;
         }
         
-        .question-text { font-size: 1.05rem; font-weight: 700; color: white; font-family: 'Courier New', monospace; }
+        /* Ajuste na Web */
+        .question-text { 
+            font-size: 0.82rem; 
+            font-weight: 700; 
+            color: white; 
+            font-family: 'Courier New', monospace; 
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
         .question-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; border-top: 1px dashed rgba(255,255,255,0.05); padding-top: 6px; }
         .question-id { font-size: 0.7rem; font-weight: bold; color: var(--text-muted); background: rgba(255,255,255,0.04); padding: 2px 4px; border-radius: 4px; }
         .answer-box { width: 70px; height: 24px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); border-radius: 4px; }
@@ -244,7 +254,7 @@
         /* Elemento invisível na web */
         .page-break { display: none; }
 
-        /* CONFIGURAÇÕES DE IMPRESSÃO ANTI-CORTE */
+        /* CONFIGURAÇÕES DE IMPRESSÃO - EM DUAS COLUNAS COM FONTE REDUZIDA */
         @media print {
             html, body {
                 background: white !important;
@@ -270,7 +280,6 @@
                 -webkit-backdrop-filter: none !important;
             }
 
-            /* Forçador físico de quebra da página 1 para a página 2 */
             .page-break {
                 display: block !important;
                 height: 0 !important;
@@ -292,41 +301,44 @@
             .slot-line { border-bottom: 2px solid black !important; height: 30px !important; }
             .slot-index { color: black !important; }
 
-            /* MODIFICAÇÃO CRÍTICA: Desativa o Grid que causava o corte e usa blocos in-line */
             .questions-grid { 
                 display: block !important; 
                 width: 100% !important;
                 margin-top: 15px !important;
             }
             
+            /* Estrutura estável de 2 colunas */
             .question-item { 
-                display: inline-block !important; /* Técnica infalível anti-corte */
+                display: inline-block !important; 
                 vertical-align: top !important;
                 background: white !important; 
                 border: 1px solid #000 !important; 
-                width: 31% !important; /* Divide o espaço perfeitamente em 3 colunas fluídas */
-                margin-right: 2% !important;
-                margin-bottom: 12px !important;
+                width: 48% !important; 
+                margin-right: 4% !important;
+                margin-bottom: 14px !important;
                 height: 75px !important; 
-                padding: 8px !important;
-                
-                /* Força o navegador a nunca cortar este bloco ao meio */
+                padding: 10px !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important; 
             }
             
-            /* Remove a margem direita do último bloco de cada linha virtual */
-            .question-item:nth-child(3n) {
+            .question-item:nth-child(2n) {
                 margin-right: 0 !important;
             }
             
-            .question-text { color: black !important; font-size: 0.95rem !important; }
+            /* MODIFICAÇÃO DE FONTE SOLICITADA: Ultra-reduzida e segura para manter linha única */
+            .question-text { 
+                color: black !important; 
+                font-size: 0.72rem !important; /* Fonte reduzida cirurgicamente */
+                white-space: nowrap !important;
+                overflow: visible !important;
+                font-family: 'Courier New', monospace;
+            }
+
             .question-id { color: black !important; background: #eee !important; font-size: 0.65rem !important; }
             .answer-box { border: 1px solid black !important; background: white !important; width: 65px !important; height: 22px !important; }
         }
 
-        /* Ajustes Responsivos Web */
-        @media (max-width: 700px) { .questions-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 480px) { .questions-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -385,8 +397,7 @@
 
         <div class="phrase-answer-zone">
             <div class="section-title">✍️ Frase Descoberta</div>
-            <div class="letter-slots" id="answerSlots">
-                </div>
+            <div class="letter-slots" id="answerSlots"></div>
         </div>
     </div>
 
@@ -395,70 +406,100 @@
     <div class="a4-page">
         <div class="questions-container">
             <div class="section-title">🧮 Expressões Matemáticas</div>
-            <div class="questions-grid" id="mathQuestions">
-                </div>
+            <div class="questions-grid" id="mathQuestions"></div>
         </div>
     </div>
 
     <script>
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        function generateMathExpression(result) {
+            const raizBase = Math.floor(Math.random() * 4) + 2; 
+            const raizValor = raizBase * raizBase;
+            let expr = `√${raizValor}`; 
+            let currentVal = raizBase;
+
+            const potBase = Math.floor(Math.random() * 2) + 2; 
+            expr = `(${expr} + ${potBase}²)`;
+            currentVal = currentVal + (potBase * potBase); 
+
+            const mult = Math.floor(Math.random() * 3) + 2;
+            expr = `(${expr} × ${mult})`;
+            currentVal = currentVal * mult;
+
+            const sub = Math.floor(Math.random() * 5) + 2; 
+            expr = `(${expr} - ${sub})`;
+            currentVal = currentVal - sub;
+
+            let divisores = [];
+            for (let i = 2; i <= 6; i++) {
+                if (currentVal % i === 0) divisores.push(i);
+            }
+            const div = divisores.length > 0 ? divisores[Math.floor(Math.random() * divisores.length)] : 1;
+            expr = `(${expr} ÷ ${div})`;
+            currentVal = Math.floor(currentVal / div);
+
+            const x = result - currentVal;
+            if (x >= 0) {
+                return `${expr} + ${x}`;
+            } else {
+                return `${expr} - ${Math.abs(x)}`;
+            }
+        }
+
         function buildActivity() {
-            const frase = document.getElementById('userPhrase').value.toUpperCase();
-            const slotsContainer = document.getElementById('answerSlots');
-            const questionsContainer = document.getElementById('mathQuestions');
-            
-            slotsContainer.innerHTML = '';
-            questionsContainer.innerHTML = '';
+            const textInput = document.getElementById('userPhrase').value.toUpperCase();
+            const cleanText = textInput.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Z ]/g, '');
 
-            let countPerguntas = 1;
+            if (cleanText.trim().length === 0) {
+                alert("Por favor, digite uma palavra ou frase contendo letras.");
+                return;
+            }
 
-            for (let i = 0; i < frase.length; i++) {
-                const char = frase[i];
-                
-                if (char === ' ' || char === '-') {
+            const questionsGrid = document.getElementById('mathQuestions');
+            const answerSlots = document.getElementById('answerSlots');
+
+            questionsGrid.innerHTML = '';
+            answerSlots.innerHTML = '';
+
+            let questionCount = 1;
+
+            for (let i = 0; i < cleanText.length; i++) {
+                const char = cleanText[i];
+
+                if (char === " ") {
                     const spaceDiv = document.createElement('div');
                     spaceDiv.className = 'slot-space';
-                    slotsContainer.appendChild(spaceDiv);
-                } else if (char.match(/[A-Z]/)) {
-                    const slotContainer = document.createElement('div');
-                    slotContainer.className = 'slot-container';
-                    
-                    const slotLine = document.createElement('div');
-                    slotLine.className = 'slot-line';
-                    
-                    const slotIndex = document.createElement('div');
-                    slotIndex.className = 'slot-index';
-                    slotIndex.innerText = countPerguntas;
-                    
-                    slotContainer.appendChild(slotLine);
-                    slotContainer.appendChild(slotIndex);
-                    slotsContainer.appendChild(slotContainer);
+                    answerSlots.appendChild(spaceDiv);
+                } else {
+                    const charCode = alphabet.indexOf(char) + 1;
 
-                    const numAlfabeto = char.charCodeAt(0) - 64; 
+                    if (charCode > 0) {
+                        const expression = generateMathExpression(charCode);
 
-                    const questionItem = document.createElement('div');
-                    questionItem.className = 'question-item';
-                    
-                    const questionText = document.createElement('div');
-                    questionText.className = 'question-text';
-                    questionText.innerText = `${numAlfabeto} + 0 = ?`; 
-                    
-                    const questionBottom = document.createElement('div');
-                    questionBottom.className = 'question-bottom';
-                    
-                    const questionId = document.createElement('div');
-                    questionId.className = 'question-id';
-                    questionId.innerText = `QUESTÃO ${countPerguntas}`;
-                    
-                    const answerBox = document.createElement('div');
-                    answerBox.className = 'answer-box';
+                        const questionItem = document.createElement('div');
+                        questionItem.className = 'question-item';
 
-                    questionBottom.appendChild(questionId);
-                    questionBottom.appendChild(answerBox);
-                    questionItem.appendChild(questionText);
-                    questionItem.appendChild(questionBottom);
-                    questionsContainer.appendChild(questionItem);
+                        questionItem.innerHTML = `
+                            <div class="question-text">${expression}</div>
+                            <div class="question-bottom">
+                                <div class="question-id">QUESTÃO ${questionCount}</div>
+                                <div class="answer-box"></div>
+                            </div>
+                        `;
+                        questionsGrid.appendChild(questionItem);
 
-                    countPerguntas++;
+                        const slotContainer = document.createElement('div');
+                        slotContainer.className = 'slot-container';
+
+                        slotContainer.innerHTML = `
+                            <div class="slot-line"></div>
+                            <div class="slot-index">${questionCount}</div>
+                        `;
+                        answerSlots.appendChild(slotContainer);
+
+                        questionCount++;
+                    }
                 }
             }
         }
