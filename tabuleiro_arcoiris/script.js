@@ -120,9 +120,9 @@ function fluxoNovoTabuleiro() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    // Evento do novo botão Página Inicial (mude 'index.html' se a home for outro arquivo)
+    // Redirecionamento configurado para a URL externa correta
     document.getElementById('btnHome').addEventListener('click', () => {
-        window.location.href = 'index.html'; 
+        window.location.href = 'https://profpablosanches.github.io/bingo/index.html'; 
     });
 
     document.getElementById('btnGerar').addEventListener('click', fluxoNovoTabuleiro);
