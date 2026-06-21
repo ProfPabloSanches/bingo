@@ -329,7 +329,7 @@
             /* MODIFICAÇÃO DE FONTE SOLICITADA: Ultra-reduzida e segura para manter linha única */
             .question-text { 
                 color: black !important; 
-                font-size: 0.72rem !important; /* Fonte reduzida cirurgicamente */
+                font-size: 0.72rem !important; 
                 white-space: nowrap !important;
                 overflow: visible !important;
                 font-family: 'Courier New', monospace;
@@ -413,38 +413,104 @@
     <script>
         const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-        function generateMathExpression(result) {
-            const raizBase = Math.floor(Math.random() * 4) + 2; 
-            const raizValor = raizBase * raizBase;
-            let expr = `√${raizValor}`; 
-            let currentVal = raizBase;
+        // NOVO MOTOR: Sem parênteses fixos e com embaralhamento real
+        function generateMathExpression(targetResult) {
+            const operacoes = ['RAIZ', 'POT', 'MULT', 'SOMA', 'SUB', 'DIV'];
+            const totalOps = Math.floor(Math.random() * 4) + 4; // de 4 a 7 operações
+            
+            let currentVal = Math.floor(Math.random() * 5) + 3; // Valor base inicial: 3 a 7
+            let tokens = [`${currentVal}`];
+            let opsUsadas = new Set();
 
-            const potBase = Math.floor(Math.random() * 2) + 2; 
-            expr = `(${expr} + ${potBase}²)`;
-            currentVal = currentVal + (potBase * potBase); 
+            for (let i = 0; i < totalOps - 1; i++) {
+                let op = operacoes[Math.floor(Math.random() * operacoes.length)];
+                
+                if (i === totalOps - 2 && opsUsadas.size < 3) {
+                    const restantes = operacoes.filter(o => !opsUsadas.has(o));
+                    op = restantes[Math.floor(Math.random() * restantes.length)];
+                }
 
-            const mult = Math.floor(Math.random() * 3) + 2;
-            expr = `(${expr} × ${mult})`;
-            currentVal = currentVal * mult;
+                switch (op) {
+                    case 'RAIZ':
+                        const baseRaiz = Math.floor(Math.random() * 3) + 2; 
+                        tokens.push('+');
+                        tokens.push(`√${baseRaiz * baseRaiz}`);
+                        currentVal += baseRaiz;
+                        opsUsadas.add('RAIZ');
+                        break;
 
-            const sub = Math.floor(Math.random() * 5) + 2; 
-            expr = `(${expr} - ${sub})`;
-            currentVal = currentVal - sub;
+                    case 'POT':
+                        const basePot = Math.floor(Math.random() * 2) + 2; 
+                        tokens.push('+');
+                        tokens.push(`${basePot}²`);
+                        currentVal += (basePot * basePot);
+                        opsUsadas.add('POT');
+                        break;
 
-            let divisores = [];
-            for (let i = 2; i <= 6; i++) {
-                if (currentVal % i === 0) divisores.push(i);
+                    case 'MULT':
+                        const m = currentVal < 15 ? (Math.floor(Math.random() * 2) + 2) : 2;
+                        tokens.push('×');
+                        tokens.push(`${m}`);
+                        currentVal *= m;
+                        opsUsadas.add('MULT');
+                        break;
+
+                    case 'DIV':
+                        let divs = [];
+                        for (let d = 2; d <= 6; d++) {
+                            if (currentVal % d === 0) divs.push(d);
+                        }
+                        if (divs.length > 0) {
+                            const d = divs[Math.floor(Math.random() * divs.length)];
+                            tokens.push('÷');
+                            tokens.push(`${d}`);
+                            currentVal = Math.floor(currentVal / d);
+                            opsUsadas.add('DIV');
+                        } else {
+                            const s = Math.floor(Math.random() * 4) + 2;
+                            tokens.push('+');
+                            tokens.push(`${s}`);
+                            currentVal += s;
+                            opsUsadas.add('SOMA');
+                        }
+                        break;
+
+                    case 'SUB':
+                        const sub = Math.floor(Math.random() * 5) + 2;
+                        if (currentVal - sub > 0) {
+                            tokens.push('-');
+                            tokens.push(`${sub}`);
+                            currentVal -= sub;
+                            opsUsadas.add('SUB');
+                        } else {
+                            tokens.push('+');
+                            tokens.push(`${soma}`);
+                            currentVal += sub;
+                            opsUsadas.add('SOMA');
+                        }
+                        break;
+
+                    case 'SOMA':
+                    default:
+                        const soma = Math.floor(Math.random() * 6) + 2;
+                        tokens.push('+');
+                        tokens.push(`${soma}`);
+                        currentVal += soma;
+                        opsUsadas.add('SOMA');
+                        break;
+                }
             }
-            const div = divisores.length > 0 ? divisores[Math.floor(Math.random() * divisores.length)] : 1;
-            expr = `(${expr} ÷ ${div})`;
-            currentVal = Math.floor(currentVal / div);
 
-            const x = result - currentVal;
-            if (x >= 0) {
-                return `${expr} + ${x}`;
+            const ajuste = targetResult - currentVal;
+            if (ajuste >= 0) {
+                tokens.push('+');
+                tokens.push(`${ajuste}`);
             } else {
-                return `${expr} - ${Math.abs(x)}`;
+                tokens.push('-');
+                tokens.push(`${Math.abs(ajuste)}`);
             }
+
+            return tokens.join(' ');
         }
 
         function buildActivity() {
