@@ -477,18 +477,19 @@
 
                     case 'SUB':
                         const sub = Math.floor(Math.random() * 5) + 2;
-                        if (currentVal - sub > 0) {
-                            tokens.push('-');
-                            tokens.push(`${sub}`);
-                            currentVal -= sub;
-                            opsUsadas.add('SUB');
-                        } else {
+                            if (currentVal - sub > 0) {
+                                tokens.push('-');
+                                tokens.push(`${sub}`);
+                                currentVal -= sub;
+                                opsUsadas.add('SUB');
+                    } else {
+                    // Se a subtração fosse dar negativo, faz uma soma com o valor seguro de 'sub'
                             tokens.push('+');
-                            tokens.push(`${soma}`);
+                            tokens.push(`${sub}`); 
                             currentVal += sub;
                             opsUsadas.add('SOMA');
-                        }
-                        break;
+                    }
+                    break;
 
                     case 'SOMA':
                     default:
