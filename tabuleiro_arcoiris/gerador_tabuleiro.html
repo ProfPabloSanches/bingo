@@ -1,1 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trilha Matemática - Ajuste Perfeito A4</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+    <div class="no-print">
+        <h1>🎲 Trilha Matemática A4</h1>
+        <p>Gere caminhos orgânicos de ponta a ponta. Sistema configurado para travar o tamanho e caber em uma única folha!</p>
+
+        <div class="controls">
+            <button id="btnGerar">🔄 Gerar Novo Tabuleiro</button>
+            
+            <select id="selectModo" class="custom-select">
+                <option value="arcoiris">🌈 Modo Arco-íris</option>
+                <option value="pb">🏁 Modo Preto e Branco</option>
+                <option value="rgb">🚥 Modo RGB</option>
+            </select>
+
+            <button id="btnImprimir" class="btn-print">🖨️ Imprimir Tabuleiro</button>
+            <div id="contadorCasas" style="margin-top: 10px; font-weight: bold; color: #f1c40f;"></div>
+        </div>
+    </div>
+
+    <div class="board-container">
+        <div class="board" id="tabuleiro"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
