@@ -16,6 +16,8 @@
             --btn-bg: rgba(255, 255, 255, 0.04);
             --btn-hover: #38bdf8;
             --disabled: rgba(255, 255, 255, 0.2);
+            /* Nova variável para o vermelho neon vivo */
+            --neon-alert: #ff003c;
         }
 
         * {
@@ -250,6 +252,69 @@
             color: #fff;
         }
 
+        /* -------------------------------------------------------------
+           ESTILOS ADICIONADOS: BOTÃO NEON AVISO (CANTO INFERIOR ESQUERDO)
+           ------------------------------------------------------------- */
+        .neon-floating-btn {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            background-color: #0b0f19;
+            color: var(--neon-alert);
+            border: 3px solid var(--neon-alert);
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border-radius: 12px;
+            z-index: 10;
+            box-shadow: 0 0 12px var(--neon-alert), inset 0 0 6px var(--neon-alert);
+            text-shadow: 0 0 6px var(--neon-alert);
+            transition: all 0.25s ease;
+            animation: pulsarNeon 1.4s infinite alternate cubic-bezier(0.4, 0, 0.6, 1);
+        }
+
+        .neon-floating-btn:hover {
+            background-color: var(--neon-alert);
+            color: #fff;
+            box-shadow: 0 0 30px var(--neon-alert);
+            text-shadow: none;
+        }
+
+        .neon-modal-card {
+            border: 1px solid var(--neon-alert);
+            box-shadow: 0 0 30px rgba(255, 0, 60, 0.35);
+        }
+
+        .neon-modal-card h2 {
+            color: var(--neon-alert);
+            text-shadow: 0 0 8px var(--neon-alert);
+        }
+
+        .close-neon-btn {
+            background-color: rgba(255, 0, 60, 0.1);
+            border: 1px solid var(--neon-alert);
+            color: var(--text-main);
+        }
+
+        .close-neon-btn:hover {
+            background-color: var(--neon-alert) !important;
+        }
+
+        @keyframes pulsarNeon {
+            from {
+                box-shadow: 0 0 10px var(--neon-alert), inset 0 0 4px var(--neon-alert);
+                text-shadow: 0 0 4px var(--neon-alert);
+                transform: scale(1);
+            }
+            to {
+                box-shadow: 0 0 22px var(--neon-alert), inset 0 0 10px var(--neon-alert);
+                text-shadow: 0 0 12px var(--neon-alert);
+                transform: scale(1.04);
+            }
+        }
+
         /* Responsividade Inteligente */
         @media (max-width: 1024px) {
             .menu-grid { grid-template-columns: repeat(2, 1fr); }
@@ -260,12 +325,13 @@
             h1 { font-size: 1.8rem; margin-bottom: 2rem; }
             body { padding: 20px 16px; }
             .info-floating-btn { bottom: 16px; right: 16px; }
+            /* Ajuste responsivo para o botão de aviso */
+            .neon-floating-btn { bottom: 16px; left: 16px; padding: 10px 20px; font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Fundo Matemático -->
     <div class="math-bg">
         <div class="formula" style="top: 5%; left: 5%; font-size: 2rem;">a² + b² = c²</div>
         <div class="formula" style="top: 15%; right: 10%; font-size: 1.5rem;">E = mc²</div>
@@ -281,14 +347,12 @@
     <h1>Portal de Jogos Matemáticos</h1>
 
     <div class="menu-grid">
-        <!-- Categoria 1 -->
         <div class="column">
             <div class="column-title">Potências</div>
             <a href="potencia.html" class="btn-link">Bingo de Potências</a>
             <a href="gerador_cartelas.html" class="btn-link">Gerador de Cartelas</a>
         </div>
 
-        <!-- Categoria 2 -->
         <div class="column">
             <div class="column-title">Coordenadas</div>
             <a href="cartesiano.html" class="btn-link">Bingo de Coordenadas</a>
@@ -296,14 +360,12 @@
             <a href="gerador_planos_cartesianos.html" class="btn-link">Gerador de Planos</a>
         </div>
 
-        <!-- Categoria 3 -->
         <div class="column">
             <div class="column-title">Raízes</div>
             <a href="raizes.html" class="btn-link">Bingo de Raízes</a>
             <a href="gerador_cartela_raizes.html" class="btn-link">Gerador de Cartelas</a>
         </div>
 
-        <!-- Categoria 4 -->
         <div class="column">
             <div class="column-title">Variados</div>
             <a href="frases/index.html" class="btn-link">Caça Palavras</a>
@@ -312,44 +374,71 @@
         </div>
     </div>
 
-    <!-- Botão Flutuante (Info) -->
+    <button class="neon-floating-btn" id="openNeonBtn">AVISO</button>
+
     <button class="info-floating-btn" id="openModalBtn" title="Informações do Proprietário">i</button>
 
-    <!-- Estrutura do Popup (Modal) -->
+    <div class="modal-overlay" id="neonOverlay">
+        <div class="modal-card neon-modal-card">
+            <h2>AVISO IMPORTANTE</h2>
+            <p style="margin-top: 15px; text-align: justify;">Aviso de Uso
+Todas as funcionalidades disponibilizadas no Portal de Jogos Matemáticos são de uso livre e gratuito, destinadas exclusivamente a fins educacionais e pessoais.</p>
+<p style="margin-top: 15px; text-align: justify;">É expressamente proibida a monetização, comercialização, revenda ou qualquer forma de distribuição que tenha como objetivo a obtenção de lucro, total ou parcial, a partir dos conteúdos, recursos ou funcionalidades oferecidos pelo portal.</p>
+<p style="margin-top: 15px; text-align: justify;">Ao utilizar esta plataforma, o usuário concorda em respeitar estas condições de uso.</p>
+            <button class="close-modal-btn close-neon-btn" id="closeNeonBtn">Fechar</button>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-card">
             <h2>Sobre o Proprietário</h2>
             <p class="owner-name">Pablo Augusto Sanches</p>
             <p>Engenheiro Civil</p>
             <p>Professor Licenciado em Física.</p>
-             <p>Professor Licenciado em Matemática.</p>
+            <p>Professor Licenciado em Matemática.</p>
             <p style="font-size: 0.85rem; color: var(--text-muted);">Contato:</p>
-          <p style="font-size: 0.85rem; color: var(--text-muted);">pablosanches@prof.educacao.sp.gov.br</p>
-          <p style="font-size: 0.85rem; color: var(--text-muted);">pabloaugustosanches@gmail.com</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">pablosanches@prof.educacao.sp.gov.br</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">pabloaugustosanches@gmail.com</p>
             <button class="close-modal-btn" id="closeModalBtn">Fechar</button>
         </div>
     </div>
 
-    <!-- Script de Funcionamento do Popup -->
     <script>
+        // Modal Original (Info)
         const modal = document.getElementById('modalOverlay');
         const openBtn = document.getElementById('openModalBtn');
         const closeBtn = document.getElementById('closeModalBtn');
 
-        // Abre o popup
         openBtn.addEventListener('click', () => {
             modal.classList.add('active');
         });
 
-        // Fecha o popup no botão
         closeBtn.addEventListener('click', () => {
             modal.classList.remove('active');
         });
 
-        // Fecha o popup clicando fora do card informativo
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 modal.classList.remove('active');
+            }
+        });
+
+        // NOVO: Modal de Aviso Neon
+        const neonModal = document.getElementById('neonOverlay');
+        const openNeonBtn = document.getElementById('openNeonBtn');
+        const closeNeonBtn = document.getElementById('closeNeonBtn');
+
+        openNeonBtn.addEventListener('click', () => {
+            neonModal.classList.add('active');
+        });
+
+        closeNeonBtn.addEventListener('click', () => {
+            neonModal.classList.remove('active');
+        });
+
+        neonModal.addEventListener('click', (e) => {
+            if (e.target === neonModal) {
+                neonModal.classList.remove('active');
             }
         });
     </script>
