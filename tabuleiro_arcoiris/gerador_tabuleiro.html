@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trilha Matemática - Ajuste Perfeito A4</title>
+    <title>Corrida do Resto</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="no-print">
-        <h1>🎲 Trilha Matemática A4</h1>
-        <p>Gere caminhos orgânicos de ponta a ponta. Sistema configurado para travar o tamanho e caber em uma única folha!</p>
+        <h1>Corrida do Resto - Gerador de Tabuleiros</h1>
+        <p>Gere caminhos orgânicos de ponta a ponta.</p>
 
         <div class="controls">
             <button id="btnHome" class="btn-home">🏠 Página Inicial</button>
@@ -22,7 +22,7 @@
                 <option value="rgb">🚥 Modo RGB</option>
             </select>
 
-            <button id="btnImprimir" class="btn-print">🖨️ Imprimir Tabuleiro</button>
+            <button id="btnImprimir" class="btn-print">🖨️ Imprimir/Salvar PDF</button>
             <div id="contadorCasas" style="margin-top: 10px; font-weight: bold; color: #f1c40f;"></div>
         </div>
     </div>
@@ -32,12 +32,12 @@
         
         <div class="instructions-box">
             <h2>📜 Instruções do Jogo</h2>
-            <p><strong>Objetivo:</strong> Ser o primeiro jogador a chegar ao final da trilha.</p>
+            <p><strong>Objetivo:</strong> Seja o primeiro jogador a chegar ao final da trilha.</p>
             <p><strong>Número de participantes:</strong> 2 a 3 pessoas.</p>
             <h3>Como Jogar:</h3>
             <ul>
                 <li><strong>Passo 1:</strong> O jogador lança um dado comum (de 1 a 6).</li>
-                <li><strong>Passo 2:</strong> Divide o número da casa atual pelo resultado do dado.</li>
+                <li><strong>Passo 2:</strong> Divida o número da casa atual pelo resultado do dado.</li>
                 <li><strong>Passo 3:</strong> O número de casas avançadas é o <strong>resto</strong> dessa divisão.</li>
                 <li><strong>Passo 4:</strong> Se a divisão for exata (resto zero), o jogador não caminha.</li>
             </ul>
