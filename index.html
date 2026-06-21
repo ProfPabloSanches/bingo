@@ -253,7 +253,7 @@
         }
 
         /* -------------------------------------------------------------
-           ESTILOS ADICIONADOS: BOTÃO NEON AVISO (CANTO INFERIOR ESQUERDO)
+           BOTÃO NEON AVISO (CANTO INFERIOR ESQUERDO)
            ------------------------------------------------------------- */
         .neon-floating-btn {
             position: fixed;
@@ -315,6 +315,30 @@
             }
         }
 
+        /* -------------------------------------------------------------
+           ESTILO DO CONTADOR DE ACESSOS (RODAPÉ)
+           ------------------------------------------------------------- */
+        .access-counter {
+            z-index: 1;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 8px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        .access-counter span {
+            color: var(--accent);
+            font-weight: 700;
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+        }
+
         /* Responsividade Inteligente */
         @media (max-width: 1024px) {
             .menu-grid { grid-template-columns: repeat(2, 1fr); }
@@ -325,8 +349,8 @@
             h1 { font-size: 1.8rem; margin-bottom: 2rem; }
             body { padding: 20px 16px; }
             .info-floating-btn { bottom: 16px; right: 16px; }
-            /* Ajuste responsivo para o botão de aviso */
             .neon-floating-btn { bottom: 16px; left: 16px; padding: 10px 20px; font-size: 0.9rem; }
+            .access-counter { margin-bottom: 60px; /* Evita que os botões mobile cubram o contador */ }
         }
     </style>
 </head>
@@ -374,6 +398,10 @@
         </div>
     </div>
 
+    <div class="access-counter">
+        Total de Acessos: <span id="counter-value">Carregando...</span>
+    </div>
+
     <button class="neon-floating-btn" id="openNeonBtn">AVISO</button>
 
     <button class="info-floating-btn" id="openModalBtn" title="Informações do Proprietário">i</button>
@@ -381,10 +409,10 @@
     <div class="modal-overlay" id="neonOverlay">
         <div class="modal-card neon-modal-card">
             <h2>ATENÇÃO</h2>
-            <p style="margin-top: 15px; text-align: center;">Aviso de Uso:<p/>
-<p style="margin-top: 15px; text-align: justify;">Todas as funcionalidades disponibilizadas no Portal de Jogos Matemáticos são de uso livre e gratuito, destinadas exclusivamente a fins educacionais e pessoais.</p>
-<p style="margin-top: 15px; text-align: justify;">É expressamente proibida a monetização, comercialização, revenda ou qualquer forma de distribuição que tenha como objetivo a obtenção de lucro, total ou parcial, a partir dos conteúdos, recursos ou funcionalidades oferecidos pelo portal.</p>
-<p style="margin-top: 15px; text-align: justify;">Ao utilizar esta plataforma, o usuário concorda em respeitar estas condições de uso.</p>
+            <p style="margin-top: 15px; text-align: center;">Aviso de Uso:</p>
+            <p style="margin-top: 15px; text-align: justify;">Todas as funcionalidades disponibilizadas no Portal de Jogos Matemáticos são de uso livre e gratuito, destinadas exclusivamente a fins educacionais e pessoais.</p>
+            <p style="margin-top: 15px; text-align: justify;">É expressamente proibida a monetização, comercialização, revenda ou qualquer forma de distribuição que tenha como objetivo a obtenção de lucro, total ou parcial, a partir dos conteúdos, recursos ou funcionalidades oferecidos pelo portal.</p>
+            <p style="margin-top: 15px; text-align: justify;">Ao utilizar esta plataforma, o usuário concorda em respeitar estas condições de uso.</p>
             <button class="close-modal-btn close-neon-btn" id="closeNeonBtn">Fechar</button>
         </div>
     </div>
@@ -423,7 +451,7 @@
             }
         });
 
-        // NOVO: Modal de Aviso Neon
+        // Modal de Aviso Neon
         const neonModal = document.getElementById('neonOverlay');
         const openNeonBtn = document.getElementById('openNeonBtn');
         const closeNeonBtn = document.getElementById('closeNeonBtn');
@@ -441,6 +469,40 @@
                 neonModal.classList.remove('active');
             }
         });
+
+        // -------------------------------------------------------------
+        // SCRIPT DO CONTADOR DE ACESSOS GLOBAL
+        // -------------------------------------------------------------
+        function updateCounter() {
+            const counterEl = document.getElementById('counter-value');
+            
+            // Caso abra o arquivo diretamente no PC sem servidor (Protocolo file://)
+            if (window.location.protocol === 'file:') {
+                let localHits = localStorage.getItem('portal_mat_hits') || 0;
+                localHits++;
+                localStorage.setItem('portal_mat_hits', localHits);
+                counterEl.innerText = localHits + " (Local)";
+            } else {
+                // Quando o site estiver online (ex: GitHub Pages), gera estatísticas reais por domínio
+                const siteKey = window.location.hostname.replace(/\./g, '_') || 'portal_jogos_matematicos';
+                
+                fetch(`https://api.moebiz.icu/hit?key=${siteKey}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        counterEl.innerText = data.value || data.count;
+                    })
+                    .catch(() => {
+                        // Fallback em caso de falha de conexão com a API externa
+                        let fallbackHits = localStorage.getItem('portal_mat_hits') || 100;
+                        fallbackHits++;
+                        localStorage.setItem('portal_mat_hits', fallbackHits);
+                        counterEl.innerText = fallbackHits;
+                    });
+            }
+        }
+        
+        // Dispara a atualização assim que o DOM é carregado
+        updateCounter();
     </script>
     
 </body>
