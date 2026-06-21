@@ -13,6 +13,7 @@
         <p>Gere caminhos orgânicos de ponta a ponta. Sistema configurado para travar o tamanho e caber em uma única folha!</p>
 
         <div class="controls">
+            <button id="btnHome" class="btn-home">🏠 Página Inicial</button>
             <button id="btnGerar">🔄 Gerar Novo Tabuleiro</button>
             
             <select id="selectModo" class="custom-select">
@@ -28,6 +29,19 @@
 
     <div class="board-container">
         <div class="board" id="tabuleiro"></div>
+        
+        <div class="instructions-box">
+            <h2>📜 Instruções do Jogo</h2>
+            <p><strong>Objetivo:</strong> Ser o primeiro jogador a chegar ao final da trilha.</p>
+            <p><strong>Número de participantes:</strong> 2 a 3 pessoas.</p>
+            <h3>Como Jogar:</h3>
+            <ul>
+                <li><strong>Passo 1:</strong> O jogador lança um dado comum (de 1 a 6).</li>
+                <li><strong>Passo 2:</strong> Divide o número da casa atual pelo resultado do dado.</li>
+                <li><strong>Passo 3:</strong> O número de casas avançadas é o <strong>resto</strong> dessa divisão.</li>
+                <li><strong>Passo 4:</strong> Se a divisão for exata (resto zero), o jogador não caminha.</li>
+            </ul>
+        </div>
     </div>
 
     <script src="script.js"></script>
